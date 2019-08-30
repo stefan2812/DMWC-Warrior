@@ -58,6 +58,25 @@ local function smartCast(spell, Unit)
     end
 end
 
+local function EXECUTE()
+	-----------------
+	--- Bloodrage ---
+	-----------------
+	if Setting("Use Bloodrage for") == "Execute" and Spell.Execute:IsReady() and Player.HP >= Setting("Bloodrage min HP") then
+		if Spell.Bloodrage:Cast(Player) then 
+			return true 
+		end
+	end
+	---------------
+	--- Execute ---
+	---------------
+	if Spell.Execute:IsReady() then
+		if Spell.Execute:Cast(Target) then 
+			return true 
+		end
+	end
+end
+
 local function DEF()
 	----------------------
 	--- Defence Stance ---
@@ -99,11 +118,18 @@ end
 function Warrior.Rotation()
     Locals()
 	if Rotation.Active() then
-		-----------------
-		--- Check Def ---
-		-----------------
+		
 		if Player.Combat then
+			-----------------
+			--- Check Def ---
+			-----------------			
 			if DEF() then
+				return true
+			end
+			---------------------
+			--- Check Execute ---
+			---------------------		
+			if EXECUTE() then
 				return true
 			end
 		end
@@ -125,7 +151,7 @@ function Warrior.Rotation()
 			------------------
 			--- Blood Rage ---
 			------------------
-			if Setting ("Bloodrage") and Player.HP >= Setting("Bloodrage HP") and #Enemy5Y <= 2 and Player.Combat then
+			if Setting("Use Bloodrage for") == "Pull" and Player.HP >= Setting("Bloodrage min HP") and #Enemy5Y <= 2 and Player.Combat then
 				if Spell.Bloodrage:Cast(Player) then 
 					return true 
 				end
@@ -175,7 +201,7 @@ function Warrior.Rotation()
 				----------------------
 				--- Sunder Armor 1 ---
 				----------------------
-				if (Stance == "Defense" and Setting ("Sunder Target")) or Debuff.SunderArmor:Duration < 5 then
+				if (Stance == "Defense" and Setting ("Sunder Target")) or Debuff.SunderArmor:Duration() < 5 then
 					if Spell.SunderArmor:IsReady() then
 						for _,Unit in ipairs(Enemy5Y) do
 							if Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") and Spell.SunderArmor:Cast(Unit) then
@@ -197,7 +223,7 @@ function Warrior.Rotation()
 				----------------------
 				--- Sunder Armor 2 ---
 				----------------------
-				if (Stance == "Battle" and Setting ("Sunder Target")) or Debuff.SunderArmor:Duration < 5  then
+				if (Stance == "Battle" and Setting ("Sunder Target")) or Debuff.SunderArmor:Duration() < 5  then
 					if Spell.SunderArmor:IsReady() then
 						for _,Unit in ipairs(Enemy5Y) do
 							if Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") and Spell.SunderArmor:Cast(Unit) then
