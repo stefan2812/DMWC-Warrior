@@ -4,12 +4,12 @@ local Warrior = DMW.Rotations.WARRIOR
 local UI = DMW.UI
 
 function Warrior.Settings()
-	--General    
+	-- General Settings
     UI.AddHeader("General")
 	UI.AddToggle("Auto Target", nil, true)
 	UI.AddToggle("Auto Charge", nil, true)
 	UI.AddRange("Rage Dump", "Will Dump Rage after ", 0, 100, 1, 70)
-	--Skills
+	-- Skill Settings
 	UI.AddHeader("Skills")
     UI.AddToggle("Rend", nil, true)
 	UI.AddToggle("Bloodrage", nil, true)
@@ -19,11 +19,11 @@ function Warrior.Settings()
     UI.AddToggle("Revenge", nil, true)
     UI.AddToggle("Rend", nil, true)
     UI.AddToggle("Sunder Target", nil, true)
-	UI:AddRange("Sunder Stacks", nil, 1, 3, 1, 1)
+	UI.AddRange("Sunder Stacks", nil, 1, 3, 1, 1)
     UI.AddToggle("Thunderclap", nil, true)
 	UI.AddToggle("Demoshout", nil, true)
 	UI.AddRange("Demoshout at or above # Mobs", nil, 1, 3, 1, 1)
-	--Defensives	
+	-- Defensive Settings
 	UI.AddHeader("Defensives")
 	UI.AddToggle("Defense Stance", nil, true)
 	UI.AddRange("Defense Stance at or above # Mobs", nil, 1, 3, 1, 1)
