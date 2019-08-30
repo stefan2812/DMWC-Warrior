@@ -62,7 +62,7 @@ local function EXECUTE()
 	-----------------
 	--- Bloodrage ---
 	-----------------
-	if Setting("Use Bloodrage for") == "Execute" and Spell.Execute:IsReady() and Player.HP >= Setting("Bloodrage min HP") then
+	if Setting("Use Bloodrage for 1 Pull | 2 Execute") == 2 and Spell.Execute:IsReady() and Player.HP >= Setting("Bloodrage min HP") then
 		if Spell.Bloodrage:Cast(Player) then 
 			return true 
 		end
@@ -151,7 +151,7 @@ function Warrior.Rotation()
 			------------------
 			--- Blood Rage ---
 			------------------
-			if Setting("Use Bloodrage for") == "Pull" and Player.HP >= Setting("Bloodrage min HP") and #Enemy5Y <= 2 and Player.Combat then
+			if Setting("Use Bloodrage for 1 Pull | 2 Execute") == 1 and Player.HP >= Setting("Bloodrage min HP") and #Enemy5Y <= 2 and Player.Combat then
 				if Spell.Bloodrage:Cast(Player) then 
 					return true 
 				end
