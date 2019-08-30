@@ -197,7 +197,7 @@ function Warrior.Rotation()
 			---------------------
 			--- Rend & Sunder ---
 			---------------------
-			if #Enemy5Y >= 1 and not (Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then 
+			if #Enemy5Y >= 1 and not (Target.CreatureType == "Elemental" or Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then 
 				----------------------
 				--- Sunder Armor 1 ---
 				----------------------
