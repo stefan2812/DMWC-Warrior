@@ -70,7 +70,7 @@ local function DEF()
 	--------------------
 	--- Shield Block ---
 	--------------------
-	if Setting("ShieldBlock") and Player.HP < Setting("Shieldblock HP") and #Enemy5Y >= 1 and not Buff.ShieldBlock:Exist(Player) then
+	if Setting("ShieldBlock") and Player.HP < Setting("Shieldblock HP") and #Enemy5Y >= 1 then
 		if Spell.ShieldBlock:Cast(Player) then
 			return
 		end
