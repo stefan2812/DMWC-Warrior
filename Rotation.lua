@@ -70,8 +70,8 @@ local function DEF()
 	--------------------
 	--- Shield Block ---
 	--------------------
-	if Setting("ShieldBlock") and Player.HP < Setting("Shieldblock HP") and #Enemy5Y >= 1 then
-		if Spell.Evasion:Cast(Player) then
+	if Setting("ShieldBlock") and Player.HP < Setting("Shieldblock HP") and #Enemy5Y >= 1 and not Buff.ShieldBlock:Exist(Player) then
+		if Spell.ShieldBlock:Cast(Player) then
 			return
 		end
 	end
@@ -178,7 +178,7 @@ function Warrior.Rotation()
 				if Stance == "Defense" and Setting ("Sunder Target") then
 					if Spell.SunderArmor:IsReady() then
 						for _,Unit in ipairs(Enemy5Y) do
-							if not Debuff.SunderArmor:Stacks(Unit) == Setting("Sunder Stacks") and Spell.SunderArmor:Cast(Unit) then
+							if Debuff.SunderArmor:Stacks(Unit) <= Setting("Sunder Stacks") and Spell.SunderArmor:Cast(Unit) then
 								return true
 							end
 						end
@@ -200,7 +200,7 @@ function Warrior.Rotation()
 				if Stance == "Battle" and Setting ("Sunder Target") then
 					if Spell.SunderArmor:IsReady() then
 						for _,Unit in ipairs(Enemy5Y) do
-							if not Debuff.SunderArmor:Stacks(Unit) == Setting("Sunder Stacks") and Spell.SunderArmor:Cast(Unit) then
+							if Debuff.SunderArmor:Stacks(Unit) <= Setting("Sunder Stacks") and Spell.SunderArmor:Cast(Unit) then
 								return true
 							end
 						end
