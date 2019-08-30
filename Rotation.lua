@@ -178,7 +178,7 @@ function Warrior.Rotation()
 				if Stance == "Defense" and Setting ("Sunder Target") then
 					if Spell.SunderArmor:IsReady() then
 						for _,Unit in ipairs(Enemy5Y) do
-							if Debuff.SunderArmor:Stacks(Unit) <= Setting("Sunder Stacks") and Spell.SunderArmor:Cast(Unit) then
+							if Debuff.SunderArmor:Stacks(Unit) <= Setting("Apply # Stacks of Sunder Armor") and Spell.SunderArmor:Cast(Unit) then
 								return true
 							end
 						end
@@ -200,7 +200,7 @@ function Warrior.Rotation()
 				if Stance == "Battle" and Setting ("Sunder Target") then
 					if Spell.SunderArmor:IsReady() then
 						for _,Unit in ipairs(Enemy5Y) do
-							if Debuff.SunderArmor:Stacks(Unit) <= Setting("Sunder Stacks") and Spell.SunderArmor:Cast(Unit) then
+							if Debuff.SunderArmor:Stacks(Unit) <= Setting("Apply # Stacks of Sunder Armor") and Spell.SunderArmor:Cast(Unit) then
 								return true
 							end
 						end
