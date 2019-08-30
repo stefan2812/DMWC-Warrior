@@ -162,7 +162,7 @@ function Warrior.Rotation()
 			--- Thunder Clap ---
 			--------------------
 			if Stance == "Battle" then
-				if #Enemy5Y >= 2 then
+				if #Enemy5Y >= 3 then
 					if Spell.ThunderClap:Cast() then
 						return true
 					end
@@ -175,7 +175,7 @@ function Warrior.Rotation()
 				----------------------
 				--- Sunder Armor 1 ---
 				----------------------
-				if Stance == "Defense" and Setting ("Sunder Target") then
+				if (Stance == "Defense" and Setting ("Sunder Target")) or Debuff.SunderArmor:Duration < 5 then
 					if Spell.SunderArmor:IsReady() then
 						for _,Unit in ipairs(Enemy5Y) do
 							if Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") and Spell.SunderArmor:Cast(Unit) then
@@ -197,7 +197,7 @@ function Warrior.Rotation()
 				----------------------
 				--- Sunder Armor 2 ---
 				----------------------
-				if Stance == "Battle" and Setting ("Sunder Target") then
+				if (Stance == "Battle" and Setting ("Sunder Target")) or Debuff.SunderArmor:Duration < 5  then
 					if Spell.SunderArmor:IsReady() then
 						for _,Unit in ipairs(Enemy5Y) do
 							if Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") and Spell.SunderArmor:Cast(Unit) then
