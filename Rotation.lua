@@ -62,7 +62,7 @@ local function DEF()
 	----------------------
 	--- Defence Stance ---
 	----------------------
-	if Settings("Defense Stance") and #Enemy5Y >= Setting"Defense Stance at or above # Mobs" then
+	if Setting("Defense Stance") and #Enemy5Y >= Setting"Defense Stance at or above # Mobs" then
 		if Spell.StanceDefense:Cast(Player) then
 			return
 		end
@@ -70,7 +70,7 @@ local function DEF()
 	--------------------
 	--- Shield Block ---
 	--------------------
-	if Setting("ShieldBlock") and Player.HP < Setting("ShieldblockHP") and #Enemy5Y >= 1 then
+	if Setting("ShieldBlock") and Player.HP < Setting("Shieldblock HP") and #Enemy5Y >= 1 then
 		if Spell.Evasion:Cast(Player) then
 			return
 		end
@@ -88,7 +88,7 @@ local function DEF()
 	---------------------
 	--- Battle Stance ---
 	---------------------
-	if Settings("Defense Stance") and #Enemy5Y < Setting"Defense Stance at or above # Mobs" and Player.HP >= 30 then
+	if Setting("Defense Stance") and #Enemy5Y < Setting"Defense Stance at or above # Mobs" and Player.HP >= 30 then
 		if Spell.StanceBattle:Cast(Player) then
 			return
 		end
@@ -178,7 +178,7 @@ function Warrior.Rotation()
 				if Stance == "Defense" and Setting ("Sunder Target") then
 					if Spell.SunderArmor:IsReady() then
 						for _,Unit in ipairs(Enemy5Y) do
-							if not Debuff.Sunder:Stacks(Unit) == Settings("Sunder Stacks") and Spell.SunderArmor:Cast(Unit) then
+							if not Debuff.SunderArmor:Stacks(Unit) == Setting("Sunder Stacks") and Spell.SunderArmor:Cast(Unit) then
 								return true
 							end
 						end
@@ -200,7 +200,7 @@ function Warrior.Rotation()
 				if Stance == "Battle" and Setting ("Sunder Target") then
 					if Spell.SunderArmor:IsReady() then
 						for _,Unit in ipairs(Enemy5Y) do
-							if not Debuff.Sunder:Stacks(Unit) == Settings("Sunder Stacks") and Spell.SunderArmor:Cast(Unit) then
+							if not Debuff.SunderArmor:Stacks(Unit) == Setting("Sunder Stacks") and Spell.SunderArmor:Cast(Unit) then
 								return true
 							end
 						end
