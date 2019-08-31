@@ -219,10 +219,10 @@ function Warrior.Rotation()
 				----------------------
 				--- Sunder Armor 1 ---
 				----------------------
-				if (Stance == "Defense" and Setting ("Sunder Target")) or (Debuff.SunderArmor:Duration() < 5 and Setting ("Sunder Target"))then
+				if (Stance == "Defense" and Setting ("Sunder Target")) or (Debuff.SunderArmor:Duration() < 5 and Setting ("Sunder Target")) and not (Target.CreatureType == "Elemental" or Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
 					if Spell.SunderArmor:IsReady() then
 						for _,Unit in ipairs(Enemy5Y) do
-							if Debuff.SunderArmor:Stacks(Unit) <= Setting("Apply # Stacks of Sunder Armor") and Spell.SunderArmor:Cast(Unit) then
+							if (Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor")or Debuff.SunderArmor:Duration() < 5) and Spell.SunderArmor:Cast(Unit) then
 								return true
 							end
 						end
@@ -231,7 +231,7 @@ function Warrior.Rotation()
 				------------
 				--- Rend ---
 				------------				
-				if Spell.Rend:IsReady() then
+				if Spell.Rend:IsReady() and not (Target.CreatureType == "Elemental" or Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem")then
 					for _,Unit in ipairs(Enemy5Y) do
 						if not Debuff.Rend:Exist(Unit) and Spell.Rend:Cast(Unit) then
 							return true
@@ -242,9 +242,9 @@ function Warrior.Rotation()
 				--- Sunder Armor 2 ---
 				----------------------
 				if (Stance == "Battle" and Setting ("Sunder Target")) or (Debuff.SunderArmor:Duration() < 5 and Setting ("Sunder Target")) then
-					if Spell.SunderArmor:IsReady() then
+					if Spell.SunderArmor:IsReady() and not (Target.CreatureType == "Elemental" or Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
 						for _,Unit in ipairs(Enemy5Y) do
-							if Debuff.SunderArmor:Stacks(Unit) <= Setting("Apply # Stacks of Sunder Armor") and Spell.SunderArmor:Cast(Unit) then
+							if (Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") or Debuff.SunderArmor:Duration() < 5) and Spell.SunderArmor:Cast(Unit) then
 								return true
 							end
 						end
