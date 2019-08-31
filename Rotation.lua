@@ -171,8 +171,10 @@ function Warrior.Rotation()
 			------------------
 			--- Demo Shout ---
 			-------------------		
-			if not Debuff.DemoShout:Exist(Target) and Spell.DemoShout:Cast(Target) and #Enemy5Y >= Setting("Demoshout at or above # Mobs") and Setting ("Demoshout") then
-				return true
+			if not Debuff.DemoShout:Exist(Target) and #Enemy5Y >= Setting("Demoshout at or above # Mobs") and Setting ("Demoshout") then
+				if Spell.DemoShout:Cast(Target) then
+					return
+				end
 			end
 			-----------------
 			--- Overpower ---
@@ -201,10 +203,10 @@ function Warrior.Rotation()
 				----------------------
 				--- Sunder Armor 1 ---
 				----------------------
-				if (Stance == "Defense" and Setting ("Sunder Target")) or Debuff.SunderArmor:Duration() < 5 then
+				if (Stance == "Defense" and Setting ("Sunder Target")) or (Debuff.SunderArmor:Duration() < 5 and Setting ("Sunder Target"))then
 					if Spell.SunderArmor:IsReady() then
 						for _,Unit in ipairs(Enemy5Y) do
-							if Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") and Spell.SunderArmor:Cast(Unit) then
+							if Debuff.SunderArmor:Stacks(Unit) <= Setting("Apply # Stacks of Sunder Armor") and Spell.SunderArmor:Cast(Unit) then
 								return true
 							end
 						end
@@ -223,10 +225,10 @@ function Warrior.Rotation()
 				----------------------
 				--- Sunder Armor 2 ---
 				----------------------
-				if (Stance == "Battle" and Setting ("Sunder Target")) or Debuff.SunderArmor:Duration() < 5  then
+				if (Stance == "Battle" and Setting ("Sunder Target")) or (Debuff.SunderArmor:Duration() < 5 and Setting ("Sunder Target")) then
 					if Spell.SunderArmor:IsReady() then
 						for _,Unit in ipairs(Enemy5Y) do
-							if Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") and Spell.SunderArmor:Cast(Unit) then
+							if Debuff.SunderArmor:Stacks(Unit) <= Setting("Apply # Stacks of Sunder Armor") and Spell.SunderArmor:Cast(Unit) then
 								return true
 							end
 						end
