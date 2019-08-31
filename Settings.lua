@@ -29,5 +29,6 @@ function Warrior.Settings()
 	UI.AddDropdown("Defense Stance at or above # Mobs", nil , {"1", "2", "3"}, 1)
 	UI.AddToggle("ShieldBlock", nil, true)
 	UI.AddRange("Shieldblock HP", nil, 30, 100, 10, 50)
-
+	UI.AddDropdown("Use Retaliation when # Mobs", nil , {"2", "3", "4","5"}, 3)
+	UI.AddRange("Use Retaliation when below #% HP", nil, 10, 100, 5, 50)
 end

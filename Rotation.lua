@@ -78,6 +78,22 @@ local function EXECUTE()
 end
 
 local function DEF()
+	---------------------
+	--- Retaliation 1 ---
+	---------------------
+	if #Enemy5Y >= Setting("Use Retaliation when # Mobs") and Spell.Retaliation:IsReady() then
+		if Spell.Retaliation:Cast(Player) then
+			return
+		end
+	end
+	---------------------
+	--- Retaliation 2 ---
+	---------------------	
+	if Player.HP <= Setting("Use Retaliation when below #% HP") and Spell.Retaliation:IsReady() then
+		if Spell.Retaliation:Cast(Player) then
+			return
+		end
+	end
 	----------------------
 	--- Defence Stance ---
 	----------------------
