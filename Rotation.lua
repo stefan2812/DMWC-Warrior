@@ -205,7 +205,7 @@ function Warrior.Rotation()
 			--------------------
 			--- Thunder Clap ---
 			--------------------
-			if Stance == "Battle" then
+			if Stance == "Battle" and Setting("Thunderclap")then
 				if #Enemy5Y >= 3 then
 					if Spell.ThunderClap:Cast() then
 						return true
