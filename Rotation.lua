@@ -153,7 +153,7 @@ local function ThunderClap()
 	----------------------
 	--- Thunder Clap #2---
 	----------------------
-	if Stance == "Defense" and Setting("Thunderclap") and Talent.TacticalMastery >= 4 and Player.Power >= 20 then
+	if Stance == "Defense" and Setting("Thunderclap") and Talent.TacticalMastery.Rank >= 4 and Player.Power >= 20 then
 		if #Enemy5Y >= 3 then
 			if Spell.StanceBattle:Cast(Player) then
 				return
@@ -247,7 +247,6 @@ end
 function Warrior.Rotation()
     Locals()
 	if Rotation.Active() then
-		
 		if Player.Combat then
 			-----------------
 			--- Check Def ---
