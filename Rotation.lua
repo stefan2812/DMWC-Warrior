@@ -292,7 +292,11 @@ function Warrior.Rotation()
 		if Setting("Charge") and not Player.Combat and Target.Distance <= 25 and Target.Distance >= 8 then
 			smartCast("Charge", Target)
 		end
-		-- Defensive
+		-- Auto Attack --
+		if not IsCurrentSpell(6603) then
+			StartAttack(Target.Pointer)
+		end
+		-- Defensive --
 		if DefensePhase() then
 			return true
 		end
