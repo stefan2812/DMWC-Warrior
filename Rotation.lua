@@ -48,7 +48,7 @@ local function Defense()
 	---------------
 	--- Revenge ---
 	---------------
-	if Spell.Revenge:IsReady() and Stance == "Defense" then
+	if Setting ("Use Revenge") and Spell.Revenge:IsReady() and Stance == "Defense" then
 		for _,Unit in ipairs(Enemy5Y) do
 			if Spell.Revenge:Cast(Unit) then 
 				break
@@ -74,7 +74,7 @@ local function Defense()
 	------------------
 	--- Demo Shout ---
 	-------------------		
-	if not Debuff.DemoShout:Exist(Target) and Debuff.ThunderClap:Exist(Target) and #Enemy5Y >= Setting("Demoshout at or above # Mobs") and Setting ("Demoshout") then
+	if not Debuff.DemoShout:Exist(Target) and #Enemy5Y >= Setting("Demoshout at or above # Mobs") and Setting ("Use Demoshout") then
 		if Spell.DemoShout:Cast(Target) then
 			return
 		end
@@ -82,7 +82,7 @@ local function Defense()
 	----------------------
 	--- Defence Stance ---
 	----------------------
-	if Setting("Defense Stance") and #Enemy5Y >= Setting"Defense Stance at or above # Mobs" then
+	if Setting("Use Defense Stance") and #Enemy5Y >= Setting"Defense Stance at or above # Mobs" then
 		if Spell.StanceDefense:Cast(Player) then
 			return
 		end
@@ -90,15 +90,7 @@ local function Defense()
 	--------------------
 	--- Shield Block ---
 	--------------------
-	if Setting("ShieldBlock") and Player.HP < Setting("Shieldblock HP") and #Enemy5Y >= 1 and not Buff.ShieldBlock:Exist(Player) then
-		if Spell.ShieldBlock:Cast(Player) then
-			return
-		end
-	end
-	--------------------
-	--- Disarm ---
-	--------------------
-	if Player.HP < 80 and #Enemy5Y >= 1 and Spell.Disarm:IsReady() then
+	if Setting("Use ShieldBlock") and Player.HP < Setting("Shieldblock HP") and #Enemy5Y >= 1 and not Buff.ShieldBlock:Exist(Player) then
 		if Spell.ShieldBlock:Cast(Player) then
 			return
 		end
@@ -106,7 +98,7 @@ local function Defense()
 	---------------------
 	--- Battle Stance ---
 	---------------------
-	if Setting("Defense Stance") and #Enemy5Y < Setting"Defense Stance at or above # Mobs" and Player.HP >= 30 then
+	if Setting("Use Defense Stance") and #Enemy5Y < Setting"Defense Stance at or above # Mobs" and Player.HP >= 30 then
 		if Spell.StanceBattle:Cast(Player) then
 			return
 		end
@@ -140,7 +132,7 @@ local function Opener()
 	----------------------
 	--- Thunder Clap #1---
 	----------------------
-	if Stance == "Battle" and Setting("Thunderclap")then
+	if Stance == "Battle" and Setting("Use Thunderclap") and Target.Distance <= 5 then
 		if #Enemy5Y >= Setting("ThunderClap#") then
 			if Spell.ThunderClap:Cast() then
 				return true
@@ -150,19 +142,11 @@ local function Opener()
 end
 
 local function DumpRage()
-	if Player.Power >= Setting("Rage Dump") then
-		-----------------
-		--- Cleave #1 ---
-		-----------------
-		if not IsCurrentSpell(845) and Player.Power >= 20 and Player.InGroup and Player.Instance == "party" then
-			if Spell.Cleave:IsReady() and Spell.Cleave:Cast() then
-				return true
-			end
-		end
-		-----------------
-		--- Cleave #2 ---
-		-----------------
-		if not IsCurrentSpell(845) and Player.Power >= 20 and Setting ("UseCleave") then
+	if Player.Power >= Setting("Rage Dump") and Debuff.Rend:Exist(Target) and Debuff.SunderArmor:Exist(Target) then
+		--------------
+		--- Cleave ---
+		--------------
+		if not IsCurrentSpell(845) and Player.Power >= 20 and Setting ("Use Cleave") and #Enemy5Y >= 2 then
 			if Spell.Cleave:IsReady() and Spell.Cleave:Cast() then
 				return true
 			end
@@ -183,7 +167,7 @@ local function RendAndSunder()
 		----------------------
 		--- Sunder Armor 1 ---
 		----------------------
-		if (Target.Distance <= 5 and Stance == "Defense" and Setting ("Sunder Target")) or (Debuff.SunderArmor:Duration() < 5 and Setting ("Sunder Target")) and not (Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
+		if (Target.Distance <= 5 and Stance == "Defense" and Setting ("Use Sunder Armor")) or (Debuff.SunderArmor:Duration() < 5 and Setting ("Use Sunder Armor")) and not (Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
 			if Spell.SunderArmor:IsReady() then
 				for _,Unit in ipairs(Enemy5Y) do
 					if Unit.Facing then
@@ -197,7 +181,7 @@ local function RendAndSunder()
 		------------
 		--- Rend ---
 		------------				
-		if Target.Distance <= 5 and Spell.Rend:IsReady() and not (Target.CreatureType == "Elemental" or Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem")then
+		if Setting ("Use Rend") and Target.Distance <= 5 and Spell.Rend:IsReady() and not (Target.CreatureType == "Elemental" or Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem")then
 			for _,Unit in ipairs(Enemy5Y) do
 				if Unit.Facing then
 					if not Debuff.Rend:Exist(Unit) and Spell.Rend:Cast(Unit) then
@@ -209,7 +193,7 @@ local function RendAndSunder()
 		----------------------
 		--- Sunder Armor 2 ---
 		----------------------
-		if (Target.Distance <= 5 and Stance == "Battle" and Setting ("Sunder Target")) or (Debuff.SunderArmor:Duration() < 5 and Setting ("Sunder Target")) then
+		if (Target.Distance <= 5 and Stance == "Battle" and Setting ("Use Sunder Armor")) or (Debuff.SunderArmor:Duration() < 5 and Setting ("Use Sunder Armor")) then
 			if Spell.SunderArmor:IsReady() and not (Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
 				for _,Unit in ipairs(Enemy5Y) do
 					if Unit.Facing then
@@ -268,6 +252,13 @@ function Warrior.Rotation()
 				return true
 			end
 			--------------------
+			--- Disarm ---
+			--------------------
+			if Target.Player and Spell.Disarm:IsReady() and Spell.Disarm:Cast(Target) then
+				return true
+
+			end
+			--------------------
 			--- Battle Shout ---
 			--------------------
 			if not Buff.BattleShout:Exist(Player) and Spell.BattleShout:Cast(Player) then
@@ -276,7 +267,7 @@ function Warrior.Rotation()
 			------------------
 			--- Demo Shout ---
 			-------------------		
-			if not Debuff.DemoShout:Exist(Target) and #Enemy5Y >= Setting("Demoshout at or above # Mobs") and Setting ("Demoshout") then
+			if not Debuff.DemoShout:Exist(Target) and #Enemy5Y >= Setting("Demoshout at or above # Mobs") and Setting ("Use Demoshout") then
 				if Spell.DemoShout:Cast(Target) then
 					return
 				end
@@ -284,7 +275,7 @@ function Warrior.Rotation()
 			-----------------
 			--- Overpower ---
 			-----------------
-			if Spell.Overpower:IsReady() and Stance == "Battle" then
+			if Setting ("Use Overpower") and Spell.Overpower:IsReady() and Stance == "Battle" then
 				for _,Unit in ipairs(Enemy5Y) do
 					if Unit.Facing then
 						if Spell.Overpower:Cast(Unit) then 
