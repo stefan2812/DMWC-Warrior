@@ -202,6 +202,9 @@ end
 local function CombatPhase1()
 	-- Execute --
 	if Setting("Execute") and Target.HP <= 20 and Player.Power >= 15 then
+		if Player.HP >= 40 and Spell.Bloodrage:isReady() and Spell.Bloodrage:Cast(Player) then
+			return
+		end
 		smartCast("Execute", Target)
 	end
 	-- OVERPOWER --
@@ -241,7 +244,9 @@ local function CombatPhase2()
 		for _,Unit in ipairs(Enemy5Y) do
 			if Unit.Facing then
 				if (Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") or Debuff.SunderArmor:Duration() < 5)then
-					smartCast("SunderArmor")
+					if Spell.SunderArmor:Cast(Target) then
+						return
+					end
 				end
 			end
 		end
