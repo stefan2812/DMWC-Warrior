@@ -202,7 +202,7 @@ end
 local function CombatPhase1()
 	-- Execute --
 	if Setting("Execute") and Target.HP <= 20 and Player.Power >= 15 then
-		if Player.HP >= 40 and Spell.Bloodrage:isReady() and Spell.Bloodrage:Cast(Player) then
+		if Player.HP >= 40 and Player.Power <= 15 and Spell.Bloodrage:IsReady() and Spell.Bloodrage:Cast(Player) then
 			return
 		end
 		smartCast("Execute", Target)
