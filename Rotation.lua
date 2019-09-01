@@ -216,10 +216,8 @@ local function CombatPhase1()
 		smartCast("Revenge", Target)
 	end
 	-- SweepingStrikes
-	if Setting("SweepingStrikes") and #Enemy5Y >= 2 then
-        if Spell.SweepStrikes:IsReady() then 
+	if Setting("SweepingStrikes") and #Player:GetEnemies(5) >= 2 then then
 			smartCast("SweepStrikes",Player)
-        end
     end
 	-- Hamstring
 	if Target.Player and Spell.Hamstring:IsReady() and not Debuff.Hamstring:Exist(Target) then
