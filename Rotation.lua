@@ -248,7 +248,7 @@ function Warrior.Rotation()
 			------------------------
 			--- Hamstring PVP ---
 			------------------------	
-			if Target.Player and not Debuff.Hamstring:Exists(Target) and Spell.Hamstring:Cast(Target) then
+			if Target.Player and not Debuff.Hamstring:Exist(Target) and Spell.Hamstring:Cast(Target) then
 				return true
 			end
 			--------------------
