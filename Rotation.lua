@@ -92,8 +92,6 @@ local function smartCast(spell, Unit)
             end
         else
             stanceDanceCast(spell, Unit, 1)
-			print("Dancing Battle")
-			print(spell)
         end
 		elseif stanceCheckDefence[spell] then
 			if Stance == "Defense" then
@@ -102,8 +100,6 @@ local function smartCast(spell, Unit)
 				end
 			else
 				stanceDanceCast(spell, Unit, 2)
-				print("Dancing Defense")
-				print(spell)
 			end
 		elseif stanceCheckBers[spell] then
 			if Stance == "Bers" then
@@ -127,9 +123,7 @@ local function smartCast(spell, Unit)
                 return true
             end
         else
-            stanceDanceCast(spell, Unit, 1)
-			print("Dancing Battle")
-			print(spell)
+            stanceDanceCast(spell, Unit, 2)
         end
 		elseif stanceCheckBattle[spell] then
 			if Stance == "Battle" then
@@ -137,9 +131,7 @@ local function smartCast(spell, Unit)
 					return true
 				end
 			else
-				stanceDanceCast(spell, Unit, 2)
-				print("Dancing Defense")
-				print(spell)
+				stanceDanceCast(spell, Unit, 1)
 			end
 		elseif stanceCheckBers[spell] then
 			if Stance == "Bers" then
@@ -163,9 +155,7 @@ local function smartCast(spell, Unit)
                 return true
             end
         else
-            stanceDanceCast(spell, Unit, 1)
-			print("Dancing Battle")
-			print(spell)
+            stanceDanceCast(spell, Unit, 3)
         end
 		elseif stanceCheckBattle[spell] then
 			if Stance == "Battle" then
@@ -173,9 +163,7 @@ local function smartCast(spell, Unit)
 					return true
 				end
 			else
-				stanceDanceCast(spell, Unit, 2)
-				print("Dancing Defense")
-				print(spell)
+				stanceDanceCast(spell, Unit, 1)
 			end
 		elseif stanceCheckDefence[spell] then
 			if Stance == "Defense" then
@@ -183,7 +171,7 @@ local function smartCast(spell, Unit)
 					return true
 				end
 			else
-				stanceDanceCast(spell, Unit,3)
+				stanceDanceCast(spell, Unit,2)
 			end
 		else
 			if Spell[spell]:Cast(Unit) then
