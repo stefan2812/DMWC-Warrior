@@ -4,43 +4,36 @@ local Warrior = DMW.Rotations.WARRIOR
 local UI = DMW.UI
 
 function Warrior.Settings()
-	UI.AddHeader("Welcome to DMWC - Warrior")
-	-- General Settings
-    UI.AddHeader("General")
-	UI.AddToggle("Auto Target", nil, true)
-	UI.AddToggle("Auto Charge", nil, true)
-	UI.AddRange("Rage Dump", "Will Dump Rage after ", 0, 100, 5, 70)
-	UI.AddToggle("Use Cleave", nil, false)
-	UI.AddHeader("Attacks")
-    UI.AddToggle("Use Rend", nil, true)
-    UI.AddToggle("Use Overpower", nil, true)
-    UI.AddToggle("Use Revenge", nil, true)
-	-- ThunderClap
-	UI.AddHeader("Thunderclap")
-    UI.AddToggle("Use Thunderclap", nil, true)
-	UI.AddRange("ThunderClap#",nil, 1,5,1,3)
-	-- BBuffs / Debuffs	
-	UI.AddHeader("Buffs & Debuffs - General")
-	UI.AddToggle("Use BattleShout", nil, true)
- 	-- Sunder
-	UI.AddHeader("Sunder Armor")   
-	UI.AddToggle("Use Sunder Armor", nil, true)
-	UI.AddDropdown("Apply # Stacks of Sunder Armor", nil , {"1", "2", "3"}, 1)
- 	-- Demoralizing Shout
-	UI.AddHeader("Demoralizing Shout")  
-	UI.AddToggle("Use Demoshout", nil, true)
-	UI.AddDropdown("Demoshout at or above # Mobs", nil , {"1", "2", "3"}, 1)
-	--Cooldowns
-	UI.AddHeader("CD: Bloodrage")
-	UI.AddDropdown("Use Bloodrage for 1 Pull | 2 Execute", nil , {"1", "2"}, 1)
-    UI.AddRange("Bloodrage min HP", nil, 50, 100, 5, 75)
-	UI.AddHeader("CD: Retaliation")	
-	UI.AddDropdown("Use Retaliation when # Mobs", nil , {"2", "3", "4","5","1000"}, 3)
-	UI.AddRange("Use Retaliation when below #% HP", nil, 0, 100, 5, 50)
-	-- Defensive Settings
+    
+	UI.AddHeader("General")
+    UI.AddToggle("AutoTarget", "Auto Targets mobs while in Combat", false)
+	UI.AddRange("Rage Dump", "Will Dump Rage after ", 0, 100, 1, 70)
+	UI.AddHeader("Opener")
+    UI.AddToggle("Charge", "Auto Charges a selected Target when not in Combat", false)
+	
+	UI.AddHeader("Debuffs")
+    UI.AddToggle("Rend", "Applies Rend debuff to Targets", false)
+	UI.AddToggle("SunderArmor", "Applies SunderArmor debuff to Targets", false)
+	UI.AddRange("Apply # Stacks of Sunder Armor", "Apply # Stacks of Sunder Armor", 1, 3, 1, 1)
+	UI.AddToggle("Demoralizing Shout", "Use Demoralizing Shout", false)
+	UI.AddRange("Min targets for Demoralizing Shout", "Demoshout when more then # Targets ", 1, 10, 1, 1)
+	UI.AddToggle("ThunderClap", "Use Thunderclap", false)
+	
+	UI.AddHeader("Buffs")
+    UI.AddToggle("BattleShout", "Uses Battleshout to Buff", false)
+    UI.AddToggle("SweepingStrikes", "Use SweepingStrikes Talent, when two Targets available", false)
+    
+	UI.AddHeader("Counters")
+    UI.AddToggle("Overpower", "Use Overpower when available", false)
+    UI.AddToggle("Revenge", "Use Revenge when available", false)
+	UI.AddHeader("Finisher")
+	UI.AddToggle("Execute", "Use Execute to finish off enemies below 20%", false)
+	
+	UI.AddHeader("Stance")
+	UI.AddToggle("Use Defense Stance")
+	
+	--
 	UI.AddHeader("Defensives")
-	UI.AddToggle("Use Defense Stance", nil, true)
-	UI.AddDropdown("Defense Stance at or above # Mobs", nil , {"1", "2", "3","4"}, 1)
 	UI.AddToggle("Use ShieldBlock", nil, true)
 	UI.AddRange("Shieldblock HP", nil, 30, 100, 10, 50)
 end
