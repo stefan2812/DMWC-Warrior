@@ -29,7 +29,6 @@ local function Locals()
         rageDanceCheck = false
     end
 
-
 end
 
 local stanceCheckBattle = {
@@ -72,7 +71,6 @@ local stanceCheckBers = {
     ["Execute"] = true
 }
 local function stanceDanceCast(spell, Unit, stance)
-
      if rageDanceCheck then
          if stance == 1 then
              if Spell.StanceBattle:Cast() then end

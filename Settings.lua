@@ -32,7 +32,6 @@ function Warrior.Settings()
 	UI.AddHeader("Stance")
 	UI.AddToggle("Use Defense Stance")
 	
-	--
 	UI.AddHeader("Defensives")
 	UI.AddToggle("Use ShieldBlock", nil, true)
 	UI.AddRange("Shieldblock HP", nil, 30, 100, 10, 50)
