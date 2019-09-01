@@ -23,39 +23,6 @@ local function Locals()
     else
         Stance = "Bers"
     end
-        rageDanceCheck = false
-end
-
-local function smartCast(spell, Unit)
-    if stanceCheckBattle[spell] then
-        if Stance == "Battle" then
-            if Spell[spell]:Cast(Unit) then
-                return true
-            end
-        else
-            stanceDanceCast(spell, Unit, 1)
-        end
-    elseif stanceCheckDefence[spell] then
-        if Stance == "Defense" then
-            if Spell[spell]:Cast(Unit) then
-                return true
-            end
-        else
-            stanceDanceCast(spell, Unit, 2)
-        end
-    elseif stanceCheckBers[spell] then
-        if Stance == "Bers" then
-            if Spell[spell]:Cast(Unit) then
-                return true
-            end
-        else
-            stanceDanceCast(spell, Unit,3)
-        end
-    else
-        if Spell[spell]:Cast(Unit) then
-            return true
-        end
-    end
 end
 
 local function Execute()
@@ -77,7 +44,7 @@ local function Execute()
 	end
 end
 
-local function DEF()
+local function Defense()
 	---------------
 	--- Revenge ---
 	---------------
@@ -107,7 +74,7 @@ local function DEF()
 	------------------
 	--- Demo Shout ---
 	-------------------		
-	if not Debuff.DemoShout:Exist(Target) and #Enemy5Y >= Setting("Demoshout at or above # Mobs") and Setting ("Demoshout") then
+	if not Debuff.DemoShout:Exist(Target) and Debuff.ThunderClap:Exist(Target) and #Enemy5Y >= Setting("Demoshout at or above # Mobs") and Setting ("Demoshout") then
 		if Spell.DemoShout:Cast(Target) then
 			return
 		end
@@ -147,7 +114,29 @@ local function DEF()
 	
 end
 
-local function ThunderClap()
+local function Opener()
+	--------------------
+	--- Auto Charge ----
+	--------------------
+	if Setting("Auto Charge") and Spell.Charge:IsReady() and not Player.Combat and Target.Distance <= 25 and Target.Distance >= 8 then
+		if Spell.Charge:Cast(Target) then 
+			return 
+		end
+	end
+	------------------
+	--- Blood Rage ---
+	------------------
+	if Setting("Use Bloodrage for 1 Pull | 2 Execute") == 1 and Player.HP >= Setting("Bloodrage min HP") and #Enemy5Y <= 2 and Player.Combat then
+		if Spell.Bloodrage:Cast(Player) then 
+			return 
+		end
+	end
+	-------------------
+	--- Auto Attack ---
+	-------------------
+	if Target.Distance <= 5 and not IsCurrentSpell(6603) then
+		StartAttack(Target.Pointer)
+	end
 	----------------------
 	--- Thunder Clap #1---
 	----------------------
@@ -155,27 +144,6 @@ local function ThunderClap()
 		if #Enemy5Y >= Setting("ThunderClap#") then
 			if Spell.ThunderClap:Cast() then
 				return true
-			end
-		end
-	end
-	----------------------
-	--- Thunder Clap #2---
-	----------------------
-	if Stance == "Defense" and Setting("Thunderclap") and Talent.TacticalMastery.Rank >= 4 and Player.Power >= 20 then
-		if #Enemy5Y >= Setting("ThunderClap#") then
-			if Spell.StanceBattle:Cast(Player) then
-				print("Switching to Battle")
-				return
-			end
-			
-			if Spell.ThunderClap:Cast() then
-				print("Casting ThunderClap")
-				return true
-			end
-			
-			if Spell.StanceDefense:Cast(Player) then
-				print("Switching back to Defense")
-				return
 			end
 		end
 	end
@@ -257,12 +225,12 @@ end
 
 function Warrior.Rotation()
     Locals()
-	if Rotation.Active() then
+	if Rotation.Active() then	
 		if Player.Combat then
-			-----------------
-			--- Check Def ---
-			-----------------			
-			if DEF() then
+			---------------------
+			--- Check Defense ---
+			---------------------
+			if Defense() then
 				return true
 			end
 			---------------------
@@ -279,28 +247,20 @@ function Warrior.Rotation()
 			TargetUnit(DMW.Attackable[1].unit)
 		end
 		if Target and Target.ValidEnemy then
-			--------------------
-			--- Auto Charge ----
-			--------------------
-			if Setting("Auto Charge") and Spell.Charge:IsReady() and not Player.Combat and Target.Distance <= 25 and Target.Distance >= 8 then
-				if Spell.Charge:Cast(Target) then 
-					return true 
-				end
+			--------------
+			--- Opener ---
+			--------------		
+			if Opener() then
+				return true
 			end
-			------------------
-			--- Blood Rage ---
-			------------------
-			if Setting("Use Bloodrage for 1 Pull | 2 Execute") == 1 and Player.HP >= Setting("Bloodrage min HP") and #Enemy5Y <= 2 and Player.Combat then
-				if Spell.Bloodrage:Cast(Player) then 
-					return true 
-				end
-			end
-			-------------------
-			--- Auto Attack ---
-			-------------------
-			if Target.Distance <= 5 and not IsCurrentSpell(6603) then
-				StartAttack(Target.Pointer)
-			end
+			------------------------
+			--- Sweeping Strikes ---
+			------------------------			
+			if #Player:GetEnemies(5) >= 2 then
+                if Spell.SweepStrikes:Cast(Player) then 
+                    return true
+                end
+            end
 			--------------------
 			--- Battle Shout ---
 			--------------------
@@ -327,18 +287,12 @@ function Warrior.Rotation()
 					end
 				end
 			end
-			-------------------
-			--- Thunder Clap ---
-			-------------------			
-			if ThunderClap() then
-				return true
-			end
 			---------------------
 			--- Rend & Sunder ---
 			---------------------
 			if RendAndSunder() then
 				return true
-			end
+			end		
 			-----------------
 			--- Dump Rage ---
 			-----------------
