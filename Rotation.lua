@@ -159,7 +159,7 @@ function Warrior.Rotation()
 		--- Auto Charge ----
 		--------------------
 		if Target and Target.ValidEnemy then
-			if Setting("Auto Charge") and Spell.Charge:IsReady() and not Player.Combat then
+			if Setting("Auto Charge") and Spell.Charge:IsReady() and not Player.Combat and Target.Distance <= 25 and Target.Distance >= 8 and then
 				if Spell.Charge:Cast(Target) then 
 					return true 
 				end
@@ -175,7 +175,7 @@ function Warrior.Rotation()
 			-------------------
 			--- Auto Attack ---
 			-------------------
-			if not IsCurrentSpell(6603) then
+			if Target.Distance <= 5 and not IsCurrentSpell(6603) then
 				StartAttack(Target.Pointer)
 			end
 			--------------------
@@ -221,7 +221,7 @@ function Warrior.Rotation()
 				----------------------
 				--- Sunder Armor 1 ---
 				----------------------
-				if (Stance == "Defense" and Setting ("Sunder Target")) or (Debuff.SunderArmor:Duration() < 5 and Setting ("Sunder Target")) and not (Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
+				if (Target.Distance <= 5 and Stance == "Defense" and Setting ("Sunder Target")) or (Debuff.SunderArmor:Duration() < 5 and Setting ("Sunder Target")) and not (Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
 					if Spell.SunderArmor:IsReady() then
 						for _,Unit in ipairs(Enemy5Y) do
 							if Unit.Facing then
@@ -235,7 +235,7 @@ function Warrior.Rotation()
 				------------
 				--- Rend ---
 				------------				
-				if Spell.Rend:IsReady() and not (Target.CreatureType == "Elemental" or Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem")then
+				if Target.Distance <= 5 and Spell.Rend:IsReady() and not (Target.CreatureType == "Elemental" or Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem")then
 					for _,Unit in ipairs(Enemy5Y) do
 						if Unit.Facing then
 							if not Debuff.Rend:Exist(Unit) and Spell.Rend:Cast(Unit) then
@@ -247,7 +247,7 @@ function Warrior.Rotation()
 				----------------------
 				--- Sunder Armor 2 ---
 				----------------------
-				if (Stance == "Battle" and Setting ("Sunder Target")) or (Debuff.SunderArmor:Duration() < 5 and Setting ("Sunder Target")) then
+				if (Target.Distance <= 5 and Stance == "Battle" and Setting ("Sunder Target")) or (Debuff.SunderArmor:Duration() < 5 and Setting ("Sunder Target")) then
 					if Spell.SunderArmor:IsReady() and not (Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
 						for _,Unit in ipairs(Enemy5Y) do
 							if Unit.Facing then
