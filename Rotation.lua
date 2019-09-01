@@ -152,7 +152,7 @@ local function ThunderClap()
 	--- Thunder Clap #1---
 	----------------------
 	if Stance == "Battle" and Setting("Thunderclap")then
-		if #Enemy5Y >= 3 then
+		if #Enemy5Y >= Setting("ThunderClap#") then
 			if Spell.ThunderClap:Cast() then
 				return true
 			end
@@ -162,16 +162,19 @@ local function ThunderClap()
 	--- Thunder Clap #2---
 	----------------------
 	if Stance == "Defense" and Setting("Thunderclap") and Talent.TacticalMastery.Rank >= 4 and Player.Power >= 20 then
-		if #Enemy5Y >= 3 then
+		if #Enemy5Y >= Setting("ThunderClap#") then
 			if Spell.StanceBattle:Cast(Player) then
+				print("Switching to Battle")
 				return
 			end
 			
 			if Spell.ThunderClap:Cast() then
+				print("Casting ThunderClap")
 				return true
 			end
 			
 			if Spell.StanceDefense:Cast(Player) then
+				print("Switching back to Defense")
 				return
 			end
 		end
