@@ -10,7 +10,6 @@ function Warrior.Settings()
 	UI.AddToggle("Auto Target", nil, true)
 	UI.AddToggle("Auto Charge", nil, true)
 	UI.AddRange("Rage Dump", "Will Dump Rage after ", 0, 100, 5, 70)
-	--UI.AddToggle("TacticalMastery", "Tactical Mastery is at least Rank 4", false)
 	-- Attacks
 	UI.AddHeader("Attacks")
     UI.AddToggle("Rend", nil, true)
