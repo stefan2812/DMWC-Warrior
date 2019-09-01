@@ -104,6 +104,14 @@ local function DEF()
 			return
 		end
 	end
+	------------------
+	--- Demo Shout ---
+	-------------------		
+	if not Debuff.DemoShout:Exist(Target) and #Enemy5Y >= Setting("Demoshout at or above # Mobs") and Setting ("Demoshout") then
+		if Spell.DemoShout:Cast(Target) then
+			return
+		end
+	end
 	----------------------
 	--- Defence Stance ---
 	----------------------
