@@ -159,7 +159,7 @@ function Warrior.Rotation()
 		--- Auto Charge ----
 		--------------------
 		if Target and Target.ValidEnemy then
-			if Setting("Auto Charge") and Spell.Charge:IsReady() and not Player.Combat and Target.Distance <= 25 and Target.Distance >= 8 and then
+			if Setting("Auto Charge") and Spell.Charge:IsReady() and not Player.Combat and Target.Distance <= 25 and Target.Distance >= 8 then
 				if Spell.Charge:Cast(Target) then 
 					return true 
 				end
