@@ -326,7 +326,7 @@ function Warrior.Rotation()
 			---------------------
 			--- Rend & Sunder ---
 			---------------------
-			if RendAndSunder()
+			if RendAndSunder() then
 				return true
 			end
 			-----------------
