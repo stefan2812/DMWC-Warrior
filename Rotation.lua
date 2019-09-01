@@ -195,13 +195,13 @@ local function DefensePhase()
 		end
 	end
 	-- Shield Block ---
-	if Setting("Use ShieldBlock") and Player.HP < Setting("Shieldblock HP") and #Enemy5Y >= 1 and not Buff.ShieldBlock:Exist(Player) and Player.Combat then
+	if Setting("Use ShieldBlock") and Player.HP < Setting("Shieldblock HP") and #Enemy5Y >= 1 and Player.Combat then
 		smartCast("ShieldBlock")
 	end
 end
 local function CombatPhase1()
 	-- Execute --
-	if Setting("Execute") and Spell.Execute:IsReady() then
+	if Setting("Execute") and Target.HP <= 20 and Player.Power >= 15 then
 		smartCast("Execute", Target)
 	end
 	-- OVERPOWER --
@@ -241,7 +241,7 @@ local function CombatPhase2()
 		for _,Unit in ipairs(Enemy5Y) do
 			if Unit.Facing then
 				if (Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") or Debuff.SunderArmor:Duration() < 5)then
-					smartCast("SunderArmor", Target)
+					smartCast("SunderArmor")
 				end
 			end
 		end
@@ -259,19 +259,19 @@ local function CombatPhase2()
 end
 local function CombatPhase3()
 	-- DUMP --
-	if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.2 and Target.HP >= 22 then
-		if not IsCurrentSpell(845) and not IsCurrentSpell(285) then
-			if Enemy5YC >= 2 and not Buff.SweepStrikes:Exist("player") then
-				if Spell.Cleave:IsReady() then
-					smartCast("Cleave", Target)
-				end
-			else
-				if Spell.HeroicStrike:IsReady() then
-					smartCast("HeroicStrike", Target)
-				end
-			end
-		end
-	end
+	if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.2 then
+        if not IsCurrentSpell(845) and not IsCurrentSpell(285) then
+            if Enemy5YC >= 2 and not Buff.SweepStrikes:Exist("player") then
+                if Spell.Cleave:IsReady() and Spell.Cleave:Cast() then
+                    return true
+                end
+                else
+                    if Spell.HeroicStrike:IsReady() and Spell.HeroicStrike:Cast() then
+                        return true
+                    end
+                end
+            end
+        end
 end
 
 function Warrior.Rotation()
