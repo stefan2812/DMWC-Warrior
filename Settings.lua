@@ -10,6 +10,7 @@ function Warrior.Settings()
 	UI.AddToggle("Auto Target", nil, true)
 	UI.AddToggle("Auto Charge", nil, true)
 	UI.AddRange("Rage Dump", "Will Dump Rage after ", 0, 100, 5, 70)
+	UI.AddToggle("UseCleave)", nil, false)
 	-- Attacks
 	UI.AddHeader("Attacks")
     UI.AddToggle("Rend", nil, true)
@@ -34,7 +35,7 @@ function Warrior.Settings()
 	-- Defensive Settings
 	UI.AddHeader("Defensives")
 	UI.AddToggle("Defense Stance", nil, true)
-	UI.AddDropdown("Defense Stance at or above # Mobs", nil , {"1", "2", "3"}, 1)
+	UI.AddDropdown("Defense Stance at or above # Mobs", nil , {"1", "2", "3","4"}, 1)
 	UI.AddToggle("ShieldBlock", nil, true)
 	UI.AddRange("Shieldblock HP", nil, 30, 100, 10, 50)
 

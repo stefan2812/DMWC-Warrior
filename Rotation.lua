@@ -58,7 +58,7 @@ local function smartCast(spell, Unit)
     end
 end
 
-local function EXECUTE()
+local function Execute()
 	-----------------
 	--- Bloodrage ---
 	-----------------
@@ -120,6 +120,14 @@ local function DEF()
 			return
 		end
 	end
+	--------------------
+	--- Disarm ---
+	--------------------
+	if Player.HP < 80 and #Enemy5Y >= 1 and Spell.Disarm:IsReady() then
+		if Spell.ShieldBlock:Cast(Player) then
+			return
+		end
+	end
 	---------------------
 	--- Battle Stance ---
 	---------------------
@@ -129,6 +137,111 @@ local function DEF()
 		end
 	end
 	
+end
+
+local function ThunderClap()
+	----------------------
+	--- Thunder Clap #1---
+	----------------------
+	if Stance == "Battle" and Setting("Thunderclap")then
+		if #Enemy5Y >= 3 then
+			if Spell.ThunderClap:Cast() then
+				return true
+			end
+		end
+	end
+	----------------------
+	--- Thunder Clap #2---
+	----------------------
+	if Stance == "Defense" and Setting("Thunderclap") and Talent.TacticalMastery >= 4 and Player.Power >= 20 then
+		if #Enemy5Y >= 3 then
+			if Spell.StanceBattle:Cast(Player) then
+				return
+			end
+			
+			if Spell.ThunderClap:Cast() then
+				return true
+			end
+			
+			if Spell.StanceDefense:Cast(Player) then
+				return
+			end
+		end
+	end
+end
+
+local function DumpRage()
+	if Player.Power >= Setting("Rage Dump") then
+		-----------------
+		--- Cleave #1 ---
+		-----------------
+		if not IsCurrentSpell(845) and Player.Power >= 20 and Player.InGroup and Player.Instance == "party" then
+			if Spell.Cleave:IsReady() and Spell.Cleave:Cast() then
+				return true
+			end
+		end
+		-----------------
+		--- Cleave #2 ---
+		-----------------
+		if not IsCurrentSpell(845) and Player.Power >= 20 and Setting ("UseCleave") then
+			if Spell.Cleave:IsReady() and Spell.Cleave:Cast() then
+				return true
+			end
+		end
+		--------------------
+		--- HeroicStrike ---
+		--------------------
+		if not IsCurrentSpell(285) then
+			if Spell.HeroicStrike:IsReady() and Spell.HeroicStrike:Cast() then
+				return true
+			end
+		end
+	end
+end
+
+local function RendAndSunder()
+	if #Enemy5Y >= 1 then 
+		----------------------
+		--- Sunder Armor 1 ---
+		----------------------
+		if (Target.Distance <= 5 and Stance == "Defense" and Setting ("Sunder Target")) or (Debuff.SunderArmor:Duration() < 5 and Setting ("Sunder Target")) and not (Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
+			if Spell.SunderArmor:IsReady() then
+				for _,Unit in ipairs(Enemy5Y) do
+					if Unit.Facing then
+						if (Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor")or Debuff.SunderArmor:Duration() < 5) and Spell.SunderArmor:Cast(Unit) then
+							return true
+						end
+					end
+				end
+			end
+		end
+		------------
+		--- Rend ---
+		------------				
+		if Target.Distance <= 5 and Spell.Rend:IsReady() and not (Target.CreatureType == "Elemental" or Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem")then
+			for _,Unit in ipairs(Enemy5Y) do
+				if Unit.Facing then
+					if not Debuff.Rend:Exist(Unit) and Spell.Rend:Cast(Unit) then
+						return true
+					end
+				end
+			end
+		end
+		----------------------
+		--- Sunder Armor 2 ---
+		----------------------
+		if (Target.Distance <= 5 and Stance == "Battle" and Setting ("Sunder Target")) or (Debuff.SunderArmor:Duration() < 5 and Setting ("Sunder Target")) then
+			if Spell.SunderArmor:IsReady() and not (Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
+				for _,Unit in ipairs(Enemy5Y) do
+					if Unit.Facing then
+						if (Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") or Debuff.SunderArmor:Duration() < 5) and Spell.SunderArmor:Cast(Unit) then
+							return true
+						end
+					end
+				end
+			end
+		end
+	end
 end
 
 function Warrior.Rotation()
@@ -145,7 +258,7 @@ function Warrior.Rotation()
 			---------------------
 			--- Check Execute ---
 			---------------------		
-			if EXECUTE() then
+			if Execute() then
 				return true
 			end
 		end
@@ -155,10 +268,10 @@ function Warrior.Rotation()
 		if not (Target and Target.ValidEnemy) and #Enemy5Y >= 1 and Setting("Auto Target")then
 			TargetUnit(DMW.Attackable[1].unit)
 		end
-		--------------------
-		--- Auto Charge ----
-		--------------------
 		if Target and Target.ValidEnemy then
+			--------------------
+			--- Auto Charge ----
+			--------------------
 			if Setting("Auto Charge") and Spell.Charge:IsReady() and not Player.Combat and Target.Distance <= 25 and Target.Distance >= 8 then
 				if Spell.Charge:Cast(Target) then 
 					return true 
@@ -204,70 +317,23 @@ function Warrior.Rotation()
 					end
 				end
 			end
-			--------------------
+			-------------------
 			--- Thunder Clap ---
-			--------------------
-			if Stance == "Battle" and Setting("Thunderclap")then
-				if #Enemy5Y >= 3 then
-					if Spell.ThunderClap:Cast() then
-						return true
-					end
-				end
+			-------------------			
+			if ThunderClap() then
+				return true
 			end
 			---------------------
 			--- Rend & Sunder ---
 			---------------------
-			if #Enemy5Y >= 1 then 
-				----------------------
-				--- Sunder Armor 1 ---
-				----------------------
-				if (Target.Distance <= 5 and Stance == "Defense" and Setting ("Sunder Target")) or (Debuff.SunderArmor:Duration() < 5 and Setting ("Sunder Target")) and not (Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
-					if Spell.SunderArmor:IsReady() then
-						for _,Unit in ipairs(Enemy5Y) do
-							if Unit.Facing then
-								if (Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor")or Debuff.SunderArmor:Duration() < 5) and Spell.SunderArmor:Cast(Unit) then
-									return true
-								end
-							end
-						end
-					end
-				end
-				------------
-				--- Rend ---
-				------------				
-				if Target.Distance <= 5 and Spell.Rend:IsReady() and not (Target.CreatureType == "Elemental" or Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem")then
-					for _,Unit in ipairs(Enemy5Y) do
-						if Unit.Facing then
-							if not Debuff.Rend:Exist(Unit) and Spell.Rend:Cast(Unit) then
-								return true
-							end
-						end
-					end
-				end
-				----------------------
-				--- Sunder Armor 2 ---
-				----------------------
-				if (Target.Distance <= 5 and Stance == "Battle" and Setting ("Sunder Target")) or (Debuff.SunderArmor:Duration() < 5 and Setting ("Sunder Target")) then
-					if Spell.SunderArmor:IsReady() and not (Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
-						for _,Unit in ipairs(Enemy5Y) do
-							if Unit.Facing then
-								if (Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") or Debuff.SunderArmor:Duration() < 5) and Spell.SunderArmor:Cast(Unit) then
-									return true
-								end
-							end
-						end
-					end
-				end
+			if RendAndSunder()
+				return true
 			end
 			-----------------
 			--- Dump Rage ---
 			-----------------
-			if Player.Power >= Setting("Rage Dump") then
-				if not IsCurrentSpell(285) then
-					if Spell.HeroicStrike:IsReady() and Spell.HeroicStrike:Cast() then
-						return true
-					end
-				end
+			if DumpRage() then
+				return true
 			end
 		end
 	end
