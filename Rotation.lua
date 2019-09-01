@@ -261,6 +261,12 @@ function Warrior.Rotation()
                     return true
                 end
             end
+			------------------------
+			--- Hamstring PVP ---
+			------------------------	
+			if Target.Player and not Debuff.Hamstring:Exists(Target) and Spell.Hamstring:Cast(Target) then
+				return true
+			end
 			--------------------
 			--- Battle Shout ---
 			--------------------
