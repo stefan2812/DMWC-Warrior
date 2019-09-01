@@ -142,7 +142,7 @@ local function Opener()
 end
 
 local function DumpRage()
-	if Player.Power >= Setting("Rage Dump") and Debuff.Rend:Exist(Target) and Debuff.SunderArmor:Exist(Target) then
+	if Player.Power >= Setting("Rage Dump") then
 		--------------
 		--- Cleave ---
 		--------------
@@ -167,11 +167,11 @@ local function RendAndSunder()
 		----------------------
 		--- Sunder Armor 1 ---
 		----------------------
-		if (Target.Distance <= 5 and Stance == "Defense" and Setting ("Use Sunder Armor")) or (Debuff.SunderArmor:Duration() < 5 and Setting ("Use Sunder Armor")) and not (Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
+		if (Target.Distance <= 5 and Stance == "Defense" and Setting ("Use Sunder Armor")) or (Debuff.SunderArmor:Duration() < 5 and Setting ("Use Sunder Armor")) and not (Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") and Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor")then
 			if Spell.SunderArmor:IsReady() then
 				for _,Unit in ipairs(Enemy5Y) do
 					if Unit.Facing then
-						if (Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor")or Debuff.SunderArmor:Duration() < 5) and Spell.SunderArmor:Cast(Unit) then
+						if (Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") or Debuff.SunderArmor:Duration() < 5) and Spell.SunderArmor:Cast(Unit) then
 							return true
 						end
 					end
