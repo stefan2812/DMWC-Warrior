@@ -78,6 +78,16 @@ local function EXECUTE()
 end
 
 local function DEF()
+	---------------
+	--- Revenge ---
+	---------------
+	if Spell.Revenge:IsReady() and Stance == "Defense" then
+		for _,Unit in ipairs(Enemy5Y) do
+			if Spell.Revenge:Cast(Unit) then 
+				break
+			end
+		end
+	end
 	---------------------
 	--- Retaliation 1 ---
 	---------------------
@@ -108,16 +118,6 @@ local function DEF()
 	if Setting("ShieldBlock") and Player.HP < Setting("Shieldblock HP") and #Enemy5Y >= 1 then
 		if Spell.ShieldBlock:Cast(Player) then
 			return
-		end
-	end
-	---------------
-	--- Revenge ---
-	---------------
-	if Spell.Revenge:IsReady() and Stance == "Defense" then
-		for _,Unit in ipairs(Enemy5Y) do
-			if Spell.Revenge:Cast(Unit) then 
-				break
-			end
 		end
 	end
 	---------------------
