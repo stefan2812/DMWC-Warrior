@@ -217,11 +217,11 @@ function Warrior.Rotation()
 			---------------------
 			--- Rend & Sunder ---
 			---------------------
-			if #Enemy5Y >= 1 and not (Target.CreatureType == "Elemental" or Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then 
+			if #Enemy5Y >= 1 then 
 				----------------------
 				--- Sunder Armor 1 ---
 				----------------------
-				if (Stance == "Defense" and Setting ("Sunder Target")) or (Debuff.SunderArmor:Duration() < 5 and Setting ("Sunder Target")) and not (Target.CreatureType == "Elemental" or Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
+				if (Stance == "Defense" and Setting ("Sunder Target")) or (Debuff.SunderArmor:Duration() < 5 and Setting ("Sunder Target")) and not (Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
 					if Spell.SunderArmor:IsReady() then
 						for _,Unit in ipairs(Enemy5Y) do
 							if Unit.Facing then
@@ -248,7 +248,7 @@ function Warrior.Rotation()
 				--- Sunder Armor 2 ---
 				----------------------
 				if (Stance == "Battle" and Setting ("Sunder Target")) or (Debuff.SunderArmor:Duration() < 5 and Setting ("Sunder Target")) then
-					if Spell.SunderArmor:IsReady() and not (Target.CreatureType == "Elemental" or Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
+					if Spell.SunderArmor:IsReady() and not (Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
 						for _,Unit in ipairs(Enemy5Y) do
 							if Unit.Facing then
 								if (Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") or Debuff.SunderArmor:Duration() < 5) and Spell.SunderArmor:Cast(Unit) then
