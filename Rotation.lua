@@ -233,12 +233,12 @@ local function CombatPhase2()
 	if Setting("Rend") and Spell.Rend:IsReady() and not (Target.CreatureType == "Elemental" or Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem")then
 		if Setting("Spread Rend") then
 			for _,Unit in ipairs(Enemy5Y) do
-				if not Debuff.Rend:Exist(Unit) and Spell.Rend:Cast(Unit) then
+				if not Debuff.Rend:Exist(Unit) and Unit.TTD >= 15 and Spell.Rend:Cast(Unit) then
 					return true
 				end
 			end
 		end
-		if not Setting("Spread Rend") and not Debuff.Rend:Exist(Unit) and Spell.Rend:Cast(Unit) then
+		if not Setting("Spread Rend") and Target.TTD >= 15 and not Debuff.Rend:Exist(Target) and Spell.Rend:Cast(Target) then
 			return true
 		end
 	end
@@ -246,13 +246,13 @@ local function CombatPhase2()
 	if Setting("SunderArmor") and Spell.SunderArmor:IsReady() and not (Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
 		if Setting("Spread Sunder") then
 			for _,Unit in ipairs(Enemy5Y) do
-				if Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") and Spell.SunderArmor:Cast(Unit) then
+				if Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") and Unit.TTD >= 15 and Spell.SunderArmor:Cast(Unit) then
 					return true
 				end
 			end
 		end
 		if not Setting("Spread Sunder") then
-			if Debuff.SunderArmor:Stacks(Target) < Setting("Apply # Stacks of Sunder Armor") then
+			if Debuff.SunderArmor:Stacks(Target) < Setting("Apply # Stacks of Sunder Armor") and Target.TTD >= 15 then
 				if Spell.SunderArmor:Cast(Target) then
 					return true
 				end
@@ -260,7 +260,7 @@ local function CombatPhase2()
 		end	
 	end
 	-- Demoralizing Shout --
-	if Setting("Demoralizing Shout") and not Debuff.DemoShout:Exist(Target) and #Enemy5Y >= Setting("Min targets for Demoralizing Shout") then
+	if Setting("Demoralizing Shout") and not Debuff.DemoShout:Exist(Target) and #Player:GetEnemies(10) >= Setting("Min targets for Demoralizing Shout") then
 		if Spell.DemoShout:Cast(Target) then
 			return
 		end
