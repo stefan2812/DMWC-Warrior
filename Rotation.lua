@@ -195,6 +195,14 @@ local function BuffPhase()
 	end
 end
 local function DefensePhase()
+	-- OVERPOWER --
+	if Setting("Overpower") and not Player.overpowerTime == false and Player.Power >= 5 and Spell.Overpower:CD() == 0 then
+		smartCast("Overpower", Target)
+	end
+	-- REVENGE --
+	if Setting("Revenge") and not Player.revengeTime == false and Player.Power >= 5 and Spell.Revenge:CD() == 0 then
+		smartCast("Revenge", Target)
+	end
 	-- Defence Stance --
 	if Setting("Use Defense Stance") and #Enemy5Y >= 1 and Player.Combat then
 		if Spell.StanceDefense:Cast(Player) then
@@ -214,14 +222,6 @@ local function CombatPhase1()
 			return
 			end
 		end
-	end
-	-- OVERPOWER --
-	if Setting("Overpower") and not Player.overpowerTime == false and Player.Power >= 5 and Spell.Overpower:CD() == 0 then
-		smartCast("Overpower", Target)
-	end
-	-- REVENGE --
-	if Setting("Revenge") and not Player.revengeTime == false and Player.Power >= 5 and Spell.Revenge:CD() == 0 then
-		smartCast("Revenge", Target)
 	end
 	-- Whirlwind#1 --
 	if Player.Combat and #Target:GetEnemies(20) == 1 then
