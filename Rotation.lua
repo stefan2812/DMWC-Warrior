@@ -318,7 +318,7 @@ end
 function Warrior.Rotation()
     Locals()
 	--ReturnToBattleStance
-	if Setting("Return to Battle Stance") and not Stance=="Battle" then
+	if not select(2,GetShapeshiftFormInfo(1)) and Setting("Return to Battle Stance") and not Player.Combat then
 		if Spell.StanceBattle:Cast(Player) then
 			return true
 		end
