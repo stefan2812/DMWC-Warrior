@@ -84,7 +84,10 @@ local function stanceDanceCast(spell, Unit, stance)
          return end
      end
 local function smartCast(spell, Unit)
-    -- If in Battle
+    if pool and Spell[spell]:Cost() > Player.Power then
+        return true
+    end
+	-- If in Battle
 	if Stance == "Battle" then
 		if stanceCheckBattle[spell] then
         if Stance == "Battle" then
@@ -201,9 +204,13 @@ local function DefensePhase()
 			return
 		end
 	end
-	-- Shield Block ---
-	if Setting("Use ShieldBlock") and Player.HP < Setting("Shieldblock HP") and #Enemy5Y >= 1 and Player.Combat then
+	-- Shield Block --
+	if Setting("Use ShieldBlock") and HP < Setting("Shieldblock HP") and #Enemy5Y >= 1 and Player.Combat then
 		smartCast("ShieldBlock")
+	end
+	-- Retaliation -- 
+	if HP <=35 and Spell.Retaliation:IsReady() then
+		smartCast("Retaliation")
 	end
 end
 local function CombatPhase1()
@@ -216,7 +223,7 @@ local function CombatPhase1()
 		end
 	end
 	-- OVERPOWER --
-	if #Player.OverpowerUnit > 0 and Player.Power >= 5 and Spell.Overpower:CD() == 0 then
+	if #Player.OverpowerUnit > 0 and Spell.Overpower:CD() == 0 then
         for _,Unit in ipairs(Enemy5Y) do
             for i = 1, #Player.OverpowerUnit do
                 if Unit.GUID == Player.OverpowerUnit[i].overpowerUnit then
@@ -236,7 +243,7 @@ local function CombatPhase1()
 	end
 	-- Whirlwind#1 --
 	if Player.Combat and #Target:GetEnemies(20) == 1 then
-		smartCast("Whirlwind")
+		smartCast("Whirlwind", Target, true)
 	end
 	-- SweepingStrikes --
 	if Player.Combat and Setting("SweepingStrikes") and #Player:GetEnemies(5) >= 2 then
@@ -244,14 +251,15 @@ local function CombatPhase1()
 	end
 	-- Whirlwind#2 --
 	if Player.Combat and #Target:GetEnemies(20) >= 2 and Buff.SweepStrikes:Exist(Player) then
-		smartCast("Whirlwind")
+		smartCast("Whirlwind", Target, true)
 	end		
 	-- Execute --
-	if Setting("Execute") and Target.HP <= 20 and Player.Power >= 15 then
-		if Player.HP >= 40 and Player.Power <= 15 and Spell.Bloodrage:IsReady() and Spell.Bloodrage:Cast(Player) then
-			return
+	if Setting("Execute") then
+		for _,Unit in ipairs(Enemy5Y) do
+			if Unit.HP <= 20 then
+				smartCast("Execute", Unit, true)
+			end
 		end
-		smartCast("Execute", Target)
 	end
 	-- Hamstring
 	if Target.Player and Spell.Hamstring:IsReady() and not Debuff.Hamstring:Exist(Target) then
@@ -267,13 +275,13 @@ local function CombatPhase2()
 	if Setting("Rend") and Spell.Rend:IsReady() and not (Target.CreatureType == "Elemental" or Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem")then
 		if Setting("Spread Rend") then
 			for _,Unit in ipairs(Enemy5Y) do
-				if not Debuff.Rend:Exist(Unit) and Unit.TTD >= 15 and Spell.Rend:Cast(Unit) then
-					return true
+				if not Debuff.Rend:Exist(Unit) and Unit.TTD >= 15 then
+					smartCast("Rend", Unit, true)
 				end
 			end
 		end
-		if not Setting("Spread Rend") and Target.TTD >= 15 and not Debuff.Rend:Exist(Target) and Spell.Rend:Cast(Target) then
-			return true
+		if not Setting("Spread Rend") and Target.TTD >= 15 and not Debuff.Rend:Exist(Target) then
+			smartCast("Rend", Target, true)
 		end
 	end
 	-- SUNDER --
@@ -311,16 +319,12 @@ local function CombatPhase3()
 			return true
 		end
 	end
-	if (Player.Power >= Setting("Rage Dump") or Spell.Whirlwind:CD() >= .1) and Player.SwingLeft <= 0.2 then
+	if (Player.Power >= Setting("Rage Dump") or Spell.Whirlwind:CD() >= .1) then
         if not IsCurrentSpell(845) or not IsCurrentSpell(285) then
             if #Player:GetEnemies(5) >= 2 then
-                if Spell.Cleave:IsReady() and Spell.Cleave:Cast() then
-                    return true
-                end
+                smartCast("Cleave", Target, true)
             else
-                if Spell.HeroicStrike:IsReady() and Spell.HeroicStrike:Cast() then
-                    return true
-                end
+                smartCast("HeroicStrike", Target, true)
             end
         end
     end
