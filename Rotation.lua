@@ -231,7 +231,13 @@ end
 local function CombatPhase2()
 	-- REND --
 	if Setting("Rend") and Spell.Rend:IsReady() and not (Target.CreatureType == "Elemental" or Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem")then
-		for _,Unit in ipairs(Enemy5Y) do
+		if Setting("Spread Sunder") then
+			for _,Unit in ipairs(Enemy5Y) do
+				if not Debuff.Rend:Exist(Unit) and Spell.Rend:Cast(Unit) then
+					return true
+				end
+			end
+		else
 			if not Debuff.Rend:Exist(Unit) and Spell.Rend:Cast(Unit) then
 				return true
 			end
@@ -239,10 +245,16 @@ local function CombatPhase2()
 	end
 	-- SUNDER --
 	if Setting("SunderArmor") and Spell.SunderArmor:IsReady() and not (Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
-		for _,Unit in ipairs(Enemy5Y) do
-			if (Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") or Debuff.SunderArmor:Duration() < 5) and Spell.SunderArmor:Cast(Unit) then
-				return true
+		if Setting("Spread Sunder") then
+			for _,Unit in ipairs(Enemy5Y) do
+				if (Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") or Debuff.SunderArmor:Duration() < 5) and Spell.SunderArmor:Cast(Unit) then
+					return true
+				end
 			end
+			else
+				if (Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") or Debuff.SunderArmor:Duration() < 5) and Spell.SunderArmor:Cast(Unit) then
+					return true
+				end
 		end
 	end
 	-- Demoralizing Shout --
