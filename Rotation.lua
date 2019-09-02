@@ -7,6 +7,7 @@ local Player, Buff, Debuff, Spell, Stance, Target, Talent, Item, GCD, CDs, HUD, 
 local function Locals()
     Player = DMW.Player
     Buff = Player.Buffs
+	HP = (Player.Health / Player.HealthMax) * 100
     Debuff = Player.Debuffs
     Spell = Player.Spells
     Talent = Player.Talents
@@ -186,6 +187,12 @@ local function BuffPhase()
 	if Setting("BattleShout") and not Buff.BattleShout:Exist(Player) then
 		smartCast("BattleShout",Player)
 	end
+	--Bloodrage
+	if Spell.Bloodrage:IsReady() and HP >= 50 then
+		if Spell.Bloodrage:Cast(Target) then
+			return true
+		end
+	end
 end
 local function DefensePhase()
 	-- Defence Stance --
@@ -200,6 +207,26 @@ local function DefensePhase()
 	end
 end
 local function CombatPhase1()
+	-- Berserkerrage --
+	if Stance == "Bers" then
+		if Player.Combat and Target and Target.ValidEnemy then
+			if Spell.BersRage:Cast(Target) then
+			return
+			end
+		end
+	end
+	-- Whirlwind#1 --
+	if Player.Combat and #Target:GetEnemies(20) == 1 then
+		smartCast("Whirlwind")
+	end
+	-- SweepingStrikes --
+	if Player.Combat and Setting("SweepingStrikes") and #Player:GetEnemies(5) >= 2 then
+		smartCast("SweepStrikes",Player)
+	end
+	-- Whirlwind#2 --
+	if Player.Combat and #Target:GetEnemies(20) >= 2 and Buff.SweepStrikes:Exist(Player) then
+		smartCast("Whirlwind")
+	end		
 	-- Execute --
 	if Setting("Execute") and Target.HP <= 20 and Player.Power >= 15 then
 		if Player.HP >= 40 and Player.Power <= 15 and Spell.Bloodrage:IsReady() and Spell.Bloodrage:Cast(Player) then
@@ -215,10 +242,6 @@ local function CombatPhase1()
 	if Setting("Revenge") and Spell.Revenge:IsReady() then
 		smartCast("Revenge", Target)
 	end
-	-- SweepingStrikes
-	if Setting("SweepingStrikes") and #Player:GetEnemies(5) >= 2 then
-			smartCast("SweepStrikes",Player)
-    end
 	-- Hamstring
 	if Target.Player and Spell.Hamstring:IsReady() and not Debuff.Hamstring:Exist(Target) then
 		smartCast("Hamstring",Target)
@@ -272,28 +295,38 @@ local function CombatPhase2()
 end
 local function CombatPhase3()
 	-- DUMP --
-	if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.2 then
+	if Buff.SweepStrikes:Exist(Player) and Spell.Whirlwind:CD() >= .1 then
+		if Spell.Cleave:Cast() then
+			return true
+		end
+	end
+	if (Player.Power >= Setting("Rage Dump") or Spell.Whirlwind:CD() >= .1) and Player.SwingLeft <= 0.2 then
         if not IsCurrentSpell(845) and not IsCurrentSpell(285) then
-            if Enemy5YC >= 2 then
+            if #Player:GetEnemies(5) >= 2 then
                 if Spell.Cleave:IsReady() and Spell.Cleave:Cast() then
                     return true
                 end
-                else
-                    if Spell.HeroicStrike:IsReady() and Spell.HeroicStrike:Cast() then
-                        return true
-                    end
+            else
+                if Spell.HeroicStrike:IsReady() and Spell.HeroicStrike:Cast() then
+                    return true
                 end
             end
         end
+    end
 end
 
 function Warrior.Rotation()
     Locals()
+	--ReturnToBattleStance
+	if Setting("Return to Battle Stance") and not Stance=="Battle" then
+		if Spell.StanceBattle:Cast(Player) then
+			return true
+		end
+	end
 	-- Targeting
 	if not (Target and Target.ValidEnemy) and #Enemy5Y >= 1 and Player.Combat and Setting("AutoTarget") then
 			TargetUnit(DMW.Attackable[1].unit)
 	end
-	
 	-- Attacking
 	if Target and Target.ValidEnemy and Target.Health > 1 then
 		-- CHARGE --

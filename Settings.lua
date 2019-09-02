@@ -34,6 +34,7 @@ function Warrior.Settings()
 	
 	UI.AddHeader("Stance")
 	UI.AddToggle("Use Defense Stance")
+	UI.AddToggle("Return to Battle Stance","Returns into Battlestance after Combat",false)
 	
 	UI.AddHeader("Defensives")
 	UI.AddToggle("Use ShieldBlock", nil, true)
