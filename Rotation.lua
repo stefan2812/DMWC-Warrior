@@ -266,12 +266,11 @@ local function CombatPhase2()
 		smartCast("ThunderClap", Target)
 	end
 end
-
 local function CombatPhase3()
 	-- DUMP --
 	if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.2 then
         if not IsCurrentSpell(845) and not IsCurrentSpell(285) then
-            if Enemy5YC >= 2 and not Buff.SweepStrikes:Exist("player") then
+            if Enemy5YC >= 2 then
                 if Spell.Cleave:IsReady() and Spell.Cleave:Cast() then
                     return true
                 end
