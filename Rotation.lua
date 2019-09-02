@@ -235,11 +235,11 @@ local function CombatPhase1()
 		smartCast("Execute", Target)
 	end
 	-- OVERPOWER --
-	if Setting("Overpower") and Spell.Overpower:IsReady() then
+	if Setting("Overpower") and not Player.overpowerTime == false and Player.Power >= 5 and Spell.Overpower:CD() == 0 then
 		smartCast("Overpower", Target)
 	end
 	-- REVENGE --
-	if Setting("Revenge") and Spell.Revenge:IsReady() then
+	if Setting("Revenge") and not Player.revengeTime == false and Player.Power >= 5 and Spell.Revenge:CD() == 0 then
 		smartCast("Revenge", Target)
 	end
 	-- Hamstring
@@ -301,7 +301,7 @@ local function CombatPhase3()
 		end
 	end
 	if (Player.Power >= Setting("Rage Dump") or Spell.Whirlwind:CD() >= .1) and Player.SwingLeft <= 0.2 then
-        if not IsCurrentSpell(845) and not IsCurrentSpell(285) then
+        if not IsCurrentSpell(845) or not IsCurrentSpell(285) then
             if #Player:GetEnemies(5) >= 2 then
                 if Spell.Cleave:IsReady() and Spell.Cleave:Cast() then
                     return true
