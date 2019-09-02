@@ -231,16 +231,15 @@ end
 local function CombatPhase2()
 	-- REND --
 	if Setting("Rend") and Spell.Rend:IsReady() and not (Target.CreatureType == "Elemental" or Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem")then
-		if Setting("Spread Sunder") then
+		if Setting("Spread Rend") then
 			for _,Unit in ipairs(Enemy5Y) do
 				if not Debuff.Rend:Exist(Unit) and Spell.Rend:Cast(Unit) then
 					return true
 				end
 			end
-		else
-			if not Debuff.Rend:Exist(Unit) and Spell.Rend:Cast(Unit) then
-				return true
-			end
+		end
+		if not Setting("Spread Rend") and not Debuff.Rend:Exist(Unit) and Spell.Rend:Cast(Unit) then
+			return true
 		end
 	end
 	-- SUNDER --
@@ -251,11 +250,10 @@ local function CombatPhase2()
 					return true
 				end
 			end
-			else
-				if (Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") or Debuff.SunderArmor:Duration() < 5) and Spell.SunderArmor:Cast(Unit) then
-					return true
-				end
 		end
+		if not Setting("Spread Sunder") and (Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") or Debuff.SunderArmor:Duration() < 5) and Spell.SunderArmor:Cast(Unit) then
+			return true
+		end	
 	end
 	-- Demoralizing Shout --
 	if Setting("Demoralizing Shout") and not Debuff.DemoShout:Exist(Target) and #Enemy5Y >= Setting("Min targets for Demoralizing Shout") then
@@ -268,6 +266,7 @@ local function CombatPhase2()
 		smartCast("ThunderClap", Target)
 	end
 end
+
 local function CombatPhase3()
 	-- DUMP --
 	if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.2 then
