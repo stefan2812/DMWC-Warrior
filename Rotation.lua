@@ -246,13 +246,17 @@ local function CombatPhase2()
 	if Setting("SunderArmor") and Spell.SunderArmor:IsReady() and not (Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
 		if Setting("Spread Sunder") then
 			for _,Unit in ipairs(Enemy5Y) do
-				if (Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") or Debuff.SunderArmor:Duration() < 5) and Spell.SunderArmor:Cast(Unit) then
+				if Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") and Spell.SunderArmor:Cast(Unit) then
 					return true
 				end
 			end
 		end
-		if not Setting("Spread Sunder") and (Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") or Debuff.SunderArmor:Duration() < 5) and Spell.SunderArmor:Cast(Unit) then
-			return true
+		if not Setting("Spread Sunder") then
+			if Debuff.SunderArmor:Stacks(Target) < Setting("Apply # Stacks of Sunder Armor") then
+				if Spell.SunderArmor:Cast(Target) then
+					return true
+				end
+			end
 		end	
 	end
 	-- Demoralizing Shout --
