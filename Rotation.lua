@@ -215,6 +215,14 @@ local function CombatPhase1()
 			end
 		end
 	end
+	-- OVERPOWER --
+	if Setting("Overpower") and not Player.overpowerTime == false and Player.Power >= 5 and Spell.Overpower:CD() == 0 then
+		smartCast("Overpower", Target)
+	end
+	-- REVENGE --
+	if Setting("Revenge") and not Player.revengeTime == false and Player.Power >= 5 and Spell.Revenge:CD() == 0 then
+		smartCast("Revenge", Target)
+	end
 	-- Whirlwind#1 --
 	if Player.Combat and #Target:GetEnemies(20) == 1 then
 		smartCast("Whirlwind")
@@ -233,14 +241,6 @@ local function CombatPhase1()
 			return
 		end
 		smartCast("Execute", Target)
-	end
-	-- OVERPOWER --
-	if Setting("Overpower") and not Player.overpowerTime == false and Player.Power >= 5 and Spell.Overpower:CD() == 0 then
-		smartCast("Overpower", Target)
-	end
-	-- REVENGE --
-	if Setting("Revenge") and not Player.revengeTime == false and Player.Power >= 5 and Spell.Revenge:CD() == 0 then
-		smartCast("Revenge", Target)
 	end
 	-- Hamstring
 	if Target.Player and Spell.Hamstring:IsReady() and not Debuff.Hamstring:Exist(Target) then
