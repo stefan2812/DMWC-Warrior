@@ -256,7 +256,7 @@ local function CombatPhase2()
 		end
 	end
 	-- Thunder Clap -- 
-	if Setting("ThunderClap") and #Enemy5Y >= 1 and Player.Power >= 20 then
+	if Setting("ThunderClap") and #Enemy5Y >= Setting("Min targets for Thunderclap") and Player.Power >= 20 and not Debuff.ThunderClap:Exist(Target) then
 		smartCast("ThunderClap", Target)
 	end
 end

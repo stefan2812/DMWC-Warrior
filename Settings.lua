@@ -18,6 +18,7 @@ function Warrior.Settings()
 	UI.AddToggle("Demoralizing Shout", "Use Demoralizing Shout", false)
 	UI.AddRange("Min targets for Demoralizing Shout", "Demoshout when more then # Targets ", 1, 10, 1, 1)
 	UI.AddToggle("ThunderClap", "Use Thunderclap", false)
+	UI.AddRange("Min targets for Thunderclap", "Thunderclap when more then # Targets ", 1, 5, 1, 3)
 	
 	UI.AddHeader("Buffs")
     UI.AddToggle("BattleShout", "Uses Battleshout to Buff", false)
