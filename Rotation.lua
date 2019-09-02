@@ -215,6 +215,25 @@ local function CombatPhase1()
 			end
 		end
 	end
+	-- OVERPOWER --
+	if #Player.OverpowerUnit > 0 and Player.Power >= 5 and Spell.Overpower:CD() == 0 then
+        for _,Unit in ipairs(Enemy5Y) do
+            for i = 1, #Player.OverpowerUnit do
+                if Unit.GUID == Player.OverpowerUnit[i].overpowerUnit then
+                    smartCast("Overpower", Unit, true)
+                end
+            end 
+        end
+        return true
+    end
+	-- REVENGE --
+	if Spell.Revenge:IsReady() and Player.Power >= 5 and Spell.Revenge:CD() == 0 then
+		for _,Unit in ipairs(Enemy5Y) do
+            if Spell.Revenge:Cast(Unit) then 
+                return true
+            end
+        end
+	end
 	-- Whirlwind#1 --
 	if Player.Combat and #Target:GetEnemies(20) == 1 then
 		smartCast("Whirlwind")
@@ -328,27 +347,6 @@ function Warrior.Rotation()
 		-- Auto Attack --
 		if not IsCurrentSpell(6603) and #Enemy5Y >= 1 then
 			StartAttack(Target.Pointer)
-		end
-		-- OVERPOWER --
-		if #Player.OverpowerUnit > 0 and Player.Power >= 5 and Spell.Overpower:CD() == 0 then
-			 then
-                for _,Unit in ipairs(Enemy5Y) do
-                   for i = 1, #Player.OverpowerUnit do
-                        if Unit.GUID == Player.OverpowerUnit[i].overpowerUnit then
-                            smartCast("Overpower", Unit, true)
-                        end
-                    end 
-                end
-                return true
-            end
-		end
-		-- REVENGE --
-		if Spell.Revenge:IsReady() and Player.Power >= 5 and Spell.Revenge:CD() == 0 then
-			for _,Unit in ipairs(Enemy5Y) do
-                if Spell.Revenge:Cast(Unit) then 
-                    return true
-                end
-            end
 		end
 		-- Defensive --
 		if DefensePhase() then
