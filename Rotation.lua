@@ -330,12 +330,25 @@ function Warrior.Rotation()
 			StartAttack(Target.Pointer)
 		end
 		-- OVERPOWER --
-		if not Player.overpowerTime == false and Player.Power >= 5 and Spell.Overpower:CD() == 0 then
-			smartCast("Overpower", Target)
+		if #Player.OverpowerUnit > 0 and Player.Power >= 5 and Spell.Overpower:CD() == 0 then
+			 then
+                for _,Unit in ipairs(Enemy5Y) do
+                   for i = 1, #Player.OverpowerUnit do
+                        if Unit.GUID == Player.OverpowerUnit[i].overpowerUnit then
+                            smartCast("Overpower", Unit, true)
+                        end
+                    end 
+                end
+                return true
+            end
 		end
 		-- REVENGE --
-		if not Player.revengeTime == false and Player.Power >= 5 and Spell.Revenge:CD() == 0 then
-			smartCast("Revenge", Target)
+		if Spell.Revenge:IsReady() and Player.Power >= 5 and Spell.Revenge:CD() == 0 then
+			for _,Unit in ipairs(Enemy5Y) do
+                if Spell.Revenge:Cast(Unit) then 
+                    return true
+                end
+            end
 		end
 		-- Defensive --
 		if DefensePhase() then
