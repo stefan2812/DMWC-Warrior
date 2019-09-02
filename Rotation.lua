@@ -291,7 +291,7 @@ function Warrior.Rotation()
 			smartCast("Charge", Target)
 		end
 		-- Auto Attack --
-		if not IsCurrentSpell(6603) then
+		if not IsCurrentSpell(6603) and #Enemy5Y >= 1 then
 			StartAttack(Target.Pointer)
 		end
 		-- Defensive --
