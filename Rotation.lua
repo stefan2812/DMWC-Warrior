@@ -330,7 +330,7 @@ function Warrior.Rotation()
 	-- Attacking
 	if Target and Target.ValidEnemy and Target.Health > 1 then
 		-- CHARGE --
-		if Setting("Charge") and not Player.Combat and Target.Distance <= 25 and Target.Distance >= 8 then
+		if Setting("Charge") and not Player.Combat and Target.Distance <= 25 and Target.Distance >= 8 and HP >= 40 then
 			smartCast("Charge", Target)
 		end
 		-- Auto Attack --
