@@ -230,22 +230,18 @@ local function CombatPhase1()
 end
 local function CombatPhase2()
 	-- REND --
-	if Setting("Rend") and not Debuff.Rend:Exist(Target) and not (Target.CreatureType == "Elemental" or Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
+	if Setting("Rend") and Spell.Rend:IsReady() and not (Target.CreatureType == "Elemental" or Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem")then
 		for _,Unit in ipairs(Enemy5Y) do
-			if Unit.Facing then
-					smartCast("Rend", Target)
+			if not Debuff.Rend:Exist(Unit) and Spell.Rend:Cast(Unit) then
+				return true
 			end
-		end	
+		end
 	end
 	-- SUNDER --
-	if Setting("SunderArmor") and not Debuff.SunderArmor:Exist(Target) and not (Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
+	if Setting("SunderArmor") and Spell.SunderArmor:IsReady() and not (Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
 		for _,Unit in ipairs(Enemy5Y) do
-			if Unit.Facing then
-				if (Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") or Debuff.SunderArmor:Duration() < 5)then
-					if Spell.SunderArmor:Cast(Target) then
-						return
-					end
-				end
+			if (Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") or Debuff.SunderArmor:Duration() < 5) and Spell.SunderArmor:Cast(Unit) then
+				return true
 			end
 		end
 	end
