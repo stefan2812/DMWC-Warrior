@@ -216,7 +216,7 @@ local function CombatPhase1()
 		smartCast("Revenge", Target)
 	end
 	-- SweepingStrikes
-	if Setting("SweepingStrikes") and #Player:GetEnemies(5) >= 2 then then
+	if Setting("SweepingStrikes") and #Player:GetEnemies(5) >= 2 then
 			smartCast("SweepStrikes",Player)
     end
 	-- Hamstring
