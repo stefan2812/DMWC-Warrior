@@ -26,9 +26,9 @@ function Warrior.Settings()
     UI.AddToggle("BattleShout", "Uses Battleshout to Buff", false)
     UI.AddToggle("SweepingStrikes", "Use SweepingStrikes Talent, when two Targets available", false)
     
-	UI.AddHeader("Counters")
-    UI.AddToggle("Overpower", "Use Overpower when available", false)
-    UI.AddToggle("Revenge", "Use Revenge when available", false)
+	--UI.AddHeader("Counters")
+    --UI.AddToggle("Overpower", "Use Overpower when available", false)
+    --UI.AddToggle("Revenge", "Use Revenge when available", false)
 	UI.AddHeader("Finisher")
 	UI.AddToggle("Execute", "Use Execute to finish off enemies below 20%", false)
 	
