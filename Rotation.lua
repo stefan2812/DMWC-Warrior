@@ -246,9 +246,9 @@ local function CombatPhase1()
 		smartCast("Whirlwind", Target, true)
 	end
 	-- SweepingStrikes --
-	if Player.Combat and Setting("SweepingStrikes") and #Player:GetEnemies(5) >= 2 then
-		smartCast("SweepStrikes",Player)
-	end
+    if Setting("SweepingStrikes") and #Player:GetEnemies(5) >= 2 and Spell.SweepStrikes:CD() == 0 then
+        smartCast("SweepStrikes",Player, true)
+    end
 	-- Whirlwind#2 --
 	if Player.Combat and #Target:GetEnemies(20) >= 2 and Buff.SweepStrikes:Exist(Player) then
 		smartCast("Whirlwind", Target, true)
@@ -266,9 +266,9 @@ local function CombatPhase1()
 		smartCast("Hamstring",Target)
 	end
 	-- Disarm
-	if Target.Player and Spell.Disarm:IsReady() then
-		smartCast("Disarm",Target)
-	end
+	 if Spell.Disarm:CD() == 0 and Debuff.Hamstring:Exist(Target) then
+        smartCast("Disarm",Target, true)
+    end
 end
 local function CombatPhase2()
 	-- REND --
