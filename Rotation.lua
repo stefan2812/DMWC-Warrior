@@ -218,7 +218,7 @@ function Warrior.Rotation()
 			-------------	
 			-- Execute --
 			if Setting("Execute") then
-				for _,Unit in ipairs(Enemy5Y) do
+				for _,Unit in ipairs(Player:GetEnemies(5)) do
 					if Unit.HP < 20 and Unit.Distance < 5 then
 						local oldTarget = Target and Target.Pointer or false
 						TargetUnit(Unit.Pointer)
@@ -235,7 +235,7 @@ function Warrior.Rotation()
 			---------------
 			-- OVERPOWER --
 			if #Player.OverpowerUnit > 0 and Spell.Overpower:CD() == 0 then
-				for _,Unit in ipairs(Enemy5Y) do
+				for _,Unit in ipairs(Player:GetEnemies(5)) do
 					for i = 1, #Player.OverpowerUnit do
 						if Unit.GUID == Player.OverpowerUnit[i].overpowerUnit then
 							smartCast("Overpower", Unit, true)
@@ -248,7 +248,7 @@ function Warrior.Rotation()
 			-------------
 			-- REVENGE --
 			if Spell.Revenge:IsReady() and Player.Power >= 5 and Spell.Revenge:CD() == 0 then
-				for _,Unit in ipairs(Enemy5Y) do
+				for _,Unit in ipairs(Player:GetEnemies(5)) do
 					if Spell.Revenge:Cast(Unit) then 
 						return true
 					end
@@ -288,7 +288,7 @@ function Warrior.Rotation()
 			
 			if Setting("Rend") and Spell.Rend:IsReady() and not (Target.CreatureType == "Elemental" or Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem")then
 				if Setting("Spread Rend") then
-					for _,Unit in ipairs(Enemy5Y) do
+					for _,Unit in ipairs(Player:GetEnemies(5)) do
 						if not Debuff.Rend:Exist(Unit) and Unit.TTD >= 15 then
 							smartCast("Rend", Unit, true)
 						end
@@ -304,7 +304,7 @@ function Warrior.Rotation()
 			
 			if Setting("SunderArmor") and Spell.SunderArmor:IsReady() and not (Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
 				if Setting("Spread Sunder") then
-					for _,Unit in ipairs(Enemy5Y) do
+					for _,Unit in ipairs(Player:GetEnemies(5)) do
 						if Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") and Unit.TTD >= 15 and Spell.SunderArmor:Cast(Unit) then
 							return true
 						end
