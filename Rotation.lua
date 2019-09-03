@@ -257,13 +257,13 @@ local function CombatPhase1()
 	if Setting("Execute") then
 		for _,Unit in ipairs(Enemy5Y) do
             if Unit.HP < 20 then
-                local oldTarget = Target and Target.Pointer or false
-                    TargetUnit(Unit.Pointer)
-                    if smartCast("Execute", Target, true) then
-                        if oldTarget ~= false then
-                            TargetUnit(oldTarget)
-                        end
-					return true
+				local oldTarget = Target and Target.Pointer or false
+                TargetUnit(Unit.Pointer)
+                if smartCast("Execute", Target, true) then
+                    if oldTarget ~= false then
+                        TargetUnit(oldTarget)
+                    end
+				return true
                 end
             end
 		end
