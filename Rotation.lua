@@ -133,9 +133,6 @@ function Warrior.Rotation()
 	if Player.Combat and not (Target and Target.ValidEnemy) and #Player:GetEnemies(5) >= 1 and  Setting("AutoTarget") then
 			TargetUnit(DMW.Attackable[1].unit)
 	end
-	if Player.Instance == "party" then
-        Player:AutoTarget(5, true)
-    end
 	
 --------------------------------------------------------------------------------------		
 ------------------------------------- Opening ----------------------------------------
@@ -152,7 +149,7 @@ function Warrior.Rotation()
 		-----------------
 		-- Auto Attack --
 		
-		if not IsCurrentSpell(6603) and #Player:GetEnemies(5) >= 1 then
+		if not IsCurrentSpell(6603) and Target.Distance <= 5 then
 			StartAttack(Target.Pointer)
 		end
 	
@@ -217,21 +214,25 @@ function Warrior.Rotation()
 			
 			-------------	
 			-- Execute --
-			if Setting("Execute") then
-				for _,Unit in ipairs(Player:GetEnemies(5)) do
-					if Unit.HP < 20 and Unit.Distance < 5 then
-						local oldTarget = Target and Target.Pointer or false
-						TargetUnit(Unit.Pointer)
-						if smartCast("Execute", Target, true) then
-							if oldTarget ~= false then
-								TargetUnit(oldTarget)
+			if Setting ("Execute all enemies") then
+				if Setting("Execute") then
+					for _,Unit in ipairs(Player:GetEnemies(5)) do
+						if Unit.HP < 20 and Unit.Distance < 5 then
+							local oldTarget = Target and Target.Pointer or false
+							TargetUnit(Unit.Pointer)
+							if smartCast("Execute", Target, true) then
+								if oldTarget ~= false then
+									TargetUnit(oldTarget)
+								end
+							return true
 							end
-						return true
 						end
 					end
 				end
 			end
-			
+			if not Setting ("Execute all enemies") and Target.HP < 20 then
+				smartCast("Execute", Target, true)
+			end
 			---------------
 			-- OVERPOWER --
 			if #Player.OverpowerUnit > 0 and Spell.Overpower:CD() == 0 then
@@ -344,17 +345,28 @@ function Warrior.Rotation()
 				end
 			end
 			
-			if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.2 and Spell.Whirlwind:CD() >= .1 and Spell.SweepStrikes:CD() >= .1 then
-				if not IsCurrentSpell(845) and not IsCurrentSpell(285) then
-					if #Player:GetEnemies(5) >= 2 then
-						if Spell.Cleave:IsReady() and Spell.Cleave:Cast() then
-							return true
-						end
-						elseif Spell.HeroicStrike:IsReady() and Spell.HeroicStrike:Cast() then
-							return true
+			if Setting("Whirlwind") then
+				if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.2 and Spell.Whirlwind:CD() >= .1 and Spell.SweepStrikes:CD() >= .1 then
+					if not IsCurrentSpell(845) and not IsCurrentSpell(285) then
+						if #Player:GetEnemies(5) >= 2 then
+							smartCast("Cleave", Target, true)
+						else
+							smartCast("HeroicStrike", Target, true)
 						end
 					end
 				end
+			end
+			if not Setting("Whirlwind") then
+				if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.2 then
+					if not IsCurrentSpell(845) or not IsCurrentSpell(285) then
+						if #Player:GetEnemies(5) >= 2 then
+							smartCast("Cleave", Target, true)
+						else
+							smartCast("HeroicStrike", Target, true)
+						end
+					end
+				end
+			end
 		
 		end -- if Combat end
 	end -- if valid target end
