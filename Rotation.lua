@@ -263,7 +263,7 @@ function Warrior.Rotation()
 			---------------------
 			-- MortalStrike --
 			
-			if Setting ("MortalStrike") and ((Spell.SweepStrikes:CD() >= .1 and Spell.Whirlwind:CD() >= .1) or #Player.GetEnemies(5) == 1) then
+			if Setting ("MortalStrike") and ((Spell.SweepStrikes:CD() >= .1 and Spell.Whirlwind:CD() >= .1) or #Player:GetEnemies(5) == 1) then
 				smartCast("MortalStrike", Target, true)
 			end
 			
