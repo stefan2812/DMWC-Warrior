@@ -165,7 +165,9 @@ function Warrior.Rotation()
 			-- Battleshout --
 			
 			if Setting("BattleShout") and not Buff.BattleShout:Exist(Player) then
-				smartCast("BattleShout", Player)
+				if Spell.BattleShout:Cast(Target) then
+					return true
+				end
 			end
 			
 			---------------
@@ -389,7 +391,6 @@ function Warrior.Rotation()
 					end
 				end
 			end
-		
 		end -- if Combat end
 	end -- if valid target end
 end -- Rotation end
