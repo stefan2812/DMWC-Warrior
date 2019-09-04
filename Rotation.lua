@@ -385,6 +385,7 @@ function Warrior.Rotation()
 							if Spell.HeroicStrike:Cast() then
 								return true
 							end
+						end
 					end
 				end
 			end
