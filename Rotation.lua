@@ -42,9 +42,6 @@ local stanceCheckBattle = {
     ["ThunderClap"] = true,
     ["Charge"] = true,
     ["Execute"] = true,
-	["Cleave"] = true,
-	["HeroicStrike"] = true,
-	["MortalStrike"] = true,
     ["ShieldBash"] = true
 }
 local stanceCheckDefence = {
@@ -55,9 +52,6 @@ local stanceCheckDefence = {
     ["ShieldBlock"] = true,
     ["ShieldBash"] = true,
     ["ShieldWall"] = true,
-	["Cleave"] = true,
-	["HeroicStrike"] = true,
-	["MortalStrike"] = true,
     ["Taunt"] = true
 }
 local stanceCheckBers = {
@@ -68,11 +62,7 @@ local stanceCheckBers = {
     ["Intercept"] = true,
     ["Pummel"] = true,
     ["Recklessness"] = true,
-    ["Whirlwind"] = true,
-	["Cleave"] = true,
-	["HeroicStrike"] = true,
-	["MortalStrike"] = true
-    
+    ["Whirlwind"] = true
 }
 local function stanceDanceCast(spell, Unit, stance)
     if rageDanceCheck then
