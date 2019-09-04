@@ -195,6 +195,12 @@ function Warrior.Rotation()
 		end
 	end
 	
+	if not select(2,GetShapeshiftFormInfo(1)) and Player.Combat and not Debuff.Rend:Exist(Target) then
+		if Spell.StanceBattle:Cast(Player) then
+			return true
+		end
+	end
+	
 --------------------------------------------------------------------------------------		
 ------------------------------------- Targeting --------------------------------------
 --------------------------------------------------------------------------------------
@@ -221,7 +227,10 @@ function Warrior.Rotation()
 		if not IsCurrentSpell(6603) and Target.Distance <= 5 then
 			StartAttack(Target.Pointer)
 		end
-	
+		
+		if Setting("Use Berserk Stance") and Player.Combat and Target.Distance <=5 and Debuff.Rend:Exist(Target) then
+			regularCast("StanceBers", Player)
+		end
 --------------------------------------------------------------------------------------	
 ------------------------------------- Preparation ------------------------------------
 --------------------------------------------------------------------------------------
@@ -246,7 +255,7 @@ function Warrior.Rotation()
 			--------------------
 			-- Defence Stance --
 			if Setting("Use Defense Stance") and #Player:GetEnemies(5) >= 1 and not select(2,GetShapeshiftFormInfo(2)) then
-				regularCast("StanceDefense", Player, true)
+				regularCast("StanceDefense", Player)
 			end
 			
 			------------------
@@ -270,7 +279,7 @@ function Warrior.Rotation()
 			-- Berserkerrage --
 			
 			if Stance == "Bers" then
-				if Spell.BersRage:IsReady() then
+				if Spell.BersRage:IsReady() and Spell.BersRage.Rank > 0 then
 					regularCast("BersRage", Player, true)
 				end
 			end
@@ -329,11 +338,11 @@ function Warrior.Rotation()
 			-- Whirlwind# --
 			
 			if Setting("MortalStrike") then
-				if (#Target:GetEnemies(20) == 1 and Spell.MortalStrike:CD() >= .1) or (#Target:GetEnemies(20) >= 2 and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1)) then
+				if Setting("Whirlwind") and (#Target:GetEnemies(20) == 1 and Spell.MortalStrike:CD() >= .1) or (#Target:GetEnemies(20) >= 2 and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1)) then
 					smartCast("Whirlwind", Target, true)
 				end
 			else
-				if #Target:GetEnemies(20) == 1 or (#Target:GetEnemies(20) >= 2 and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1)) then
+				if Setting("Whirlwind") and #Target:GetEnemies(20) == 1 or (#Target:GetEnemies(20) >= 2 and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1)) then
 					smartCast("Whirlwind", Target, true)
 				end
 			end
