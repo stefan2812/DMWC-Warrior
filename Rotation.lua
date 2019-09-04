@@ -85,39 +85,114 @@ local function stanceDanceCast(spell, Unit, stance)
         end
     end
 end
+local function regularCast(spell, Unit, pool)
+    if pool and Spell[spell]:Cost() > Player.Power then
+        return true
+    end
+	if Spell[spell]:Cast(Unit) then
+        return true
+    end
+end
 local function smartCast(spell, Unit, pool)
     if pool and Spell[spell]:Cost() > Player.Power then
         return true
     end
-        if stanceCheckBattle[spell] then
-            if Stance == "Battle" then
-                if Spell[spell]:Cast(Unit) then
-                    return true
-                end
-            else
-                stanceDanceCast(spell, Unit, 1)
-            end
-        elseif stanceCheckDefence[spell] then
-            if Stance == "Defense" then
-                if Spell[spell]:Cast(Unit) then
-                    return true
-                end
-            else
-                stanceDanceCast(spell, Unit, 2)
-            end
-        elseif stanceCheckBers[spell] then
-            if Stance == "Bers" then
-                if Spell[spell]:Cast(Unit) then
-                    return true
-                end
-            else
-                stanceDanceCast(spell, Unit,3)
-            end
-        else
+ -- If in Battle
+	if select(2,GetShapeshiftFormInfo(1)) then
+		if stanceCheckBattle[spell] then
+        if Stance == "Battle" then
             if Spell[spell]:Cast(Unit) then
                 return true
             end
+        else
+            stanceDanceCast(spell, Unit, 1)
         end
+		elseif stanceCheckDefence[spell] then
+			if Stance == "Defense" then
+				if Spell[spell]:Cast(Unit) then
+					return true
+				end
+			else
+				stanceDanceCast(spell, Unit, 2)
+			end
+		elseif stanceCheckBers[spell] then
+			if Stance == "Bers" then
+				if Spell[spell]:Cast(Unit) then
+					return true
+				end
+			else
+				stanceDanceCast(spell, Unit,3)
+			end
+		else
+			if Spell[spell]:Cast(Unit) then
+				return true
+			end
+		end
+	end
+	-- If in Defense
+	if select(2,GetShapeshiftFormInfo(2)) then
+		if stanceCheckDefence[spell] then
+        if Stance == "Defense" then
+            if Spell[spell]:Cast(Unit) then
+                return true
+            end
+        else
+            stanceDanceCast(spell, Unit, 2)
+        end
+		elseif stanceCheckBattle[spell] then
+			if Stance == "Battle" then
+				if Spell[spell]:Cast(Unit) then
+					return true
+				end
+			else
+				stanceDanceCast(spell, Unit, 1)
+			end
+		elseif stanceCheckBers[spell] then
+			if Stance == "Bers" then
+				if Spell[spell]:Cast(Unit) then
+					return true
+				end
+			else
+				stanceDanceCast(spell, Unit,3)
+			end
+		else
+			if Spell[spell]:Cast(Unit) then
+				return true
+			end
+		end
+	end
+	-- If in Berserk
+	if select(2,GetShapeshiftFormInfo(3)) then
+		if stanceCheckBers[spell] then
+        if Stance == "Bers" then
+            if Spell[spell]:Cast(Unit) then
+                return true
+            end
+        else
+            stanceDanceCast(spell, Unit, 3)
+        end
+		elseif stanceCheckBattle[spell] then
+			if Stance == "Battle" then
+				if Spell[spell]:Cast(Unit) then
+					return true
+				end
+			else
+				stanceDanceCast(spell, Unit, 1)
+			end
+		elseif stanceCheckDefence[spell] then
+			if Stance == "Defense" then
+				if Spell[spell]:Cast(Unit) then
+					return true
+				end
+			else
+				stanceDanceCast(spell, Unit,2)
+			end
+		else
+			if Spell[spell]:Cast(Unit) then
+				return true
+			end
+		end
+	end
 end
 
 function Warrior.Rotation()
@@ -165,17 +240,13 @@ function Warrior.Rotation()
 			-- Battleshout --
 			
 			if Setting("BattleShout") and not Buff.BattleShout:Exist(Player) then
-				if Spell.BattleShout:Cast(Target) then
-					return true
-				end
+				regularCast("BattleShout", Player, true)
 			end
 			
 			---------------
 			-- Bloodrage --
 			if Spell.Bloodrage:IsReady() and HP >= 50 then
-				if Spell.Bloodrage:Cast(Target) then
-					return true
-				end
+				regularCast("Bloodrage", Player, true)
 			end
 			
 		------------------	
@@ -185,9 +256,7 @@ function Warrior.Rotation()
 			--------------------
 			-- Defence Stance --
 			if Setting("Use Defense Stance") and #Player:GetEnemies(5) >= 1 and not select(2,GetShapeshiftFormInfo(2)) then
-				if Spell.StanceDefense:Cast(Player) then
-					return true
-				end
+				regularCast("StanceDefense", Player, true)
 			end
 			
 			------------------
@@ -212,9 +281,7 @@ function Warrior.Rotation()
 			
 			if Stance == "Bers" then
 				if Spell.BersRage:IsReady() then
-					if Spell.BersRage:Cast(Target) then
-						return true
-					end
+					regularCast("BersRage", Player, true)
 				end
 			end
 			
@@ -233,11 +300,9 @@ function Warrior.Rotation()
 			
 			-------------
 			-- REVENGE --
-			if Spell.Revenge:IsReady() and Player.Power >= 5 and Spell.Revenge:CD() == 0 then
+			if Spell.Revenge:IsReady() and Spell.Revenge:CD() == 0 then
 				for _,Unit in ipairs(Player:GetEnemies(5)) do
-					if Spell.Revenge:Cast(Unit) then 
-						return true
-					end
+					regularCast("Revenge", Unit, true)
 				end
 			end
 			
@@ -267,9 +332,7 @@ function Warrior.Rotation()
 			-- MortalStrike --
 			
 			if Setting ("MortalStrike") and ((Spell.SweepStrikes:CD() >= .1 and Spell.Whirlwind:CD() >= .1) or #Player:GetEnemies(5) == 1) then
-				if Spell.MortalStrike:Cast() then
-					return true
-				end
+				regularCast("MortalStrike",Target,true)
 			end
 			
 			-----------------
@@ -322,16 +385,14 @@ function Warrior.Rotation()
 			if Setting("SunderArmor") and Spell.SunderArmor:IsReady() and not (Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
 				if Setting("Spread Sunder") then
 					for _,Unit in ipairs(Player:GetEnemies(5)) do
-						if Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") and Unit.TTD >= 15 and Spell.SunderArmor:Cast(Unit) then
-							return true
+						if Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") and Unit.TTD >= 15 then
+							regularCast("SunderArmor",Unit,true)
 						end
 					end
 				end
 				if not Setting("Spread Sunder") then
 					if Debuff.SunderArmor:Stacks(Target) < Setting("Apply # Stacks of Sunder Armor") and Target.TTD >= 15 then
-						if Spell.SunderArmor:Cast(Target) then
-							return true
-						end
+						regularCast("SunderArmor",Target,true)
 					end
 				end	
 			end
@@ -340,15 +401,13 @@ function Warrior.Rotation()
 			-- Demoralizing Shout --
 			
 			if Setting("Demoralizing Shout") and not Debuff.DemoShout:Exist(Target) and #Player:GetEnemies(10) >= Setting("Min targets for Demoralizing Shout") then
-				if Spell.DemoShout:Cast(Target) then
-					return true
-				end
+				regularCast("DemoShout",Target,true)
 			end
 			
 			------------------
 			-- Thunder Clap -- 
 			
-			if Setting("ThunderClap") and #Player:GetEnemies(5) >= Setting("Min targets for Thunderclap") and Player.Power >= 20 and not Debuff.ThunderClap:Exist(Target) then
+			if Setting("ThunderClap") and #Player:GetEnemies(5) >= Setting("Min targets for Thunderclap") and not Debuff.ThunderClap:Exist(Target) then
 				smartCast("ThunderClap", Target, true)
 			end
 		
@@ -356,22 +415,16 @@ function Warrior.Rotation()
 			-- DUMP --
 
 			if Buff.SweepStrikes:Exist(Player) and Spell.Whirlwind:CD() >= .1 then
-				if Spell.Cleave:Cast() then
-					return true
-				end
+				regularCast("Cleave",Target,true)
 			end
 			
 			if Setting("Whirlwind") then
 				if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.2 and Spell.Whirlwind:CD() >= .1 and Spell.SweepStrikes:CD() >= .1 then
 					if not IsCurrentSpell(845) and not IsCurrentSpell(285) then
 						if #Player:GetEnemies(5) >= 2 then
-							if Spell.Cleave:Cast() then
-								return true
-							end
+							regularCast("Cleave",Target,true)
 						else
-							if Spell.HeroicStrike:Cast() then
-								return true
-							end
+							regularCast("HeroicStrike",Target,true)
 						end
 					end
 				end
@@ -380,13 +433,9 @@ function Warrior.Rotation()
 				if Player.Power >= Setting("Rage Dump") then
 					if not IsCurrentSpell(845) or not IsCurrentSpell(285) then
 						if #Player:GetEnemies(5) >= 2 then
-							if Spell.Cleave:Cast() then
-								return true
-							end
+							regularCast("Cleave",Target,true)
 						else
-							if Spell.HeroicStrike:Cast() then
-								return true
-							end
+							regularCast("HeroicStrike",Target,true)
 						end
 					end
 				end
