@@ -31,6 +31,13 @@ local function Locals()
 
 end
 
+local RendImmune = {
+	["Undead"] = true,
+	["Elemental"] = true,
+	["Totem"] = true,
+	["Mechanical"] = true
+}
+
 local stanceCheckBattle = {
     ["Overpower"] = true,
     ["Hamstring"] = true,
@@ -195,12 +202,6 @@ function Warrior.Rotation()
 		end
 	end
 	
-	if not select(2,GetShapeshiftFormInfo(1)) and Player.Combat and not Debuff.Rend:Exist(Target) then
-		if Spell.StanceBattle:Cast(Player) then
-			return true
-		end
-	end
-	
 --------------------------------------------------------------------------------------		
 ------------------------------------- Targeting --------------------------------------
 --------------------------------------------------------------------------------------
@@ -228,7 +229,7 @@ function Warrior.Rotation()
 			StartAttack(Target.Pointer)
 		end
 		
-		if Setting("Use Berserk Stance") and Player.Combat and Target.Distance <=5 and Debuff.Rend:Exist(Target) then
+		if Setting("Use Berserk Stance") and Player.Combat and Target.Distance <=5 and (Debuff.Rend:Exist(Target) or RendImmune[Target.CreatureType]) then
 			regularCast("StanceBers", Player)
 		end
 --------------------------------------------------------------------------------------	
@@ -282,6 +283,13 @@ function Warrior.Rotation()
 				if Spell.BersRage:IsReady() and Spell.BersRage.Rank > 0 then
 					regularCast("BersRage", Player, true)
 				end
+			end
+			
+			---------------------
+			-- SweepingStrikes --
+			
+			if Setting("SweepingStrikes") and #Player:GetEnemies(5) >= 2 and Spell.SweepStrikes:CD() == 0 then
+				smartCast("SweepStrikes",Player, true)
 			end
 			
 			---------------
@@ -346,13 +354,6 @@ function Warrior.Rotation()
 					smartCast("Whirlwind", Target, true)
 				end
 			end
-
-			---------------------
-			-- SweepingStrikes --
-			
-			if Setting("SweepingStrikes") and #Player:GetEnemies(5) >= 2 and Spell.SweepStrikes:CD() == 0 then
-				smartCast("SweepStrikes",Player, true)
-			end
 			
 			---------------
 			-- Hamstring --
@@ -412,7 +413,7 @@ function Warrior.Rotation()
 			------------------
 			-- Thunder Clap -- 
 			
-			if Setting("ThunderClap") and #Player:GetEnemies(5) >= Setting("Min targets for Thunderclap") and not Debuff.ThunderClap:Exist(Target) then
+			if Setting("ThunderClap") and #Player:GetEnemies(5) >= Setting("Min targets for Thunderclap") and not Debuff.ThunderClap:Exist(Target) and (Buff.SweepingStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1) then
 				smartCast("ThunderClap", Target, true)
 			end
 		
