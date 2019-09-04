@@ -183,7 +183,7 @@ function Warrior.Rotation()
 			-- Defence Stance --
 			if Setting("Use Defense Stance") and #Player:GetEnemies(5) >= 1 and not select(2,GetShapeshiftFormInfo(2)) then
 				if Spell.StanceDefense:Cast(Player) then
-					return
+					return true
 				end
 			end
 			
@@ -210,7 +210,7 @@ function Warrior.Rotation()
 			if Stance == "Bers" then
 				if Spell.BersRage:IsReady() then
 					if Spell.BersRage:Cast(Target) then
-						return
+						return true
 					end
 				end
 			end
@@ -260,6 +260,13 @@ function Warrior.Rotation()
 				smartCast("Execute", Target, true)
 			end
 			
+			---------------------
+			-- MortalStrike --
+			
+			if Setting ("MortalStrike") and ((Spell.SweepStrikes:CD() >= .1 and Spell.Whirlwind:CD() >= .1) or #Player.GetEnemies(5) == 1) then
+				smartCast("MortalStrike", Target, true)
+			end
+			
 			-----------------
 			-- Whirlwind# --
 			
@@ -272,13 +279,6 @@ function Warrior.Rotation()
 			
 			if Setting("SweepingStrikes") and #Player:GetEnemies(5) >= 2 and Spell.SweepStrikes:CD() == 0 then
 				smartCast("SweepStrikes",Player, true)
-			end
-
-			---------------------
-			-- MortalStrike --
-			
-			if Setting ("MortalStrike") and Spell.SweepStrikes:CD() >= .1 and Spell.Whirlwind:CD() >= .1 then
-				smartCast("MortalStrike", Target, true)
 			end
 			
 			---------------
@@ -336,7 +336,7 @@ function Warrior.Rotation()
 			
 			if Setting("Demoralizing Shout") and not Debuff.DemoShout:Exist(Target) and #Player:GetEnemies(10) >= Setting("Min targets for Demoralizing Shout") then
 				if Spell.DemoShout:Cast(Target) then
-					return
+					return true
 				end
 			end
 			
