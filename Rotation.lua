@@ -15,25 +15,20 @@ local function Locals()
     Target = Player.Target or false
     HUD = DMW.Settings.profile.HUD
     CDs = Player:CDs()
-  
-    if select(2,GetShapeshiftFormInfo(1)) then
-        Stance = "Battle"
-    elseif select(2,GetShapeshiftFormInfo(2)) then
-        Stance = "Defense"
-    else
-        Stance = "Bers"
-    end
     if Talent.TacticalMastery.Rank >= 4 then
         rageDanceCheck = true
     else
         rageDanceCheck = false
     end
-
 end
 
 local RendImmune = {
 	["Undead"] = true,
 	["Elemental"] = true,
+	["Totem"] = true,
+	["Mechanical"] = true
+}
+local SunderImmune = {
 	["Totem"] = true,
 	["Mechanical"] = true
 }
@@ -71,6 +66,7 @@ local stanceCheckBers = {
     ["Recklessness"] = true,
     ["Whirlwind"] = true
 }
+
 local function stanceDanceCast(spell, Unit, stance)
     if rageDanceCheck then
         if stance == 1 then
@@ -94,100 +90,41 @@ local function smartCast(spell, Unit, pool)
     if pool and Spell[spell]:Cost() > Player.Power then
         return true
     end
- -- If in Battle
 	if select(2,GetShapeshiftFormInfo(1)) then
-		if stanceCheckBattle[spell] then
-        if Stance == "Battle" then
-            if Spell[spell]:Cast(Unit) then
-                return true
-            end
-        else
-            stanceDanceCast(spell, Unit, 1)
-        end
-		elseif stanceCheckDefence[spell] then
-			if Stance == "Defense" then
-				if Spell[spell]:Cast(Unit) then
-					return true
-				end
-			else
+		if not stanceCheckBattle[spell] then
+			if stanceCheckDefence[spell] then
 				stanceDanceCast(spell, Unit, 2)
-			end
-		elseif stanceCheckBers[spell] then
-			if Stance == "Bers" then
-				if Spell[spell]:Cast(Unit) then
-					return true
-				end
+			elseif stanceCheckBers[spell] then
+				stanceDanceCast(spell, Unit, 3)
 			else
-				stanceDanceCast(spell, Unit,3)
+				if Spell[spell]:Cast(Unit) then return true end
 			end
 		else
-			if Spell[spell]:Cast(Unit) then
-				return true
-			end
+			if Spell[spell]:Cast(Unit) then return true end
 		end
-	end
-	-- If in Defense
-	if select(2,GetShapeshiftFormInfo(2)) then
-		if stanceCheckDefence[spell] then
-        if Stance == "Defense" then
-            if Spell[spell]:Cast(Unit) then
-                return true
-            end
-        else
-            stanceDanceCast(spell, Unit, 2)
-        end
-		elseif stanceCheckBattle[spell] then
-			if Stance == "Battle" then
-				if Spell[spell]:Cast(Unit) then
-					return true
-				end
-			else
+	elseif select(2,GetShapeshiftFormInfo(3)) then
+		if not stanceCheckBers[spell] then
+			if stanceCheckBattle[spell] then
 				stanceDanceCast(spell, Unit, 1)
-			end
-		elseif stanceCheckBers[spell] then
-			if Stance == "Bers" then
-				if Spell[spell]:Cast(Unit) then
-					return true
-				end
+			elseif stanceCheckDefence[spell] then
+				stanceDanceCast(spell, Unit, 2)
 			else
-				stanceDanceCast(spell, Unit,3)
+				if Spell[spell]:Cast(Unit) then return true end
 			end
 		else
-			if Spell[spell]:Cast(Unit) then
-				return true
-			end
+			if Spell[spell]:Cast(Unit) then return true end
 		end
-	end
-	-- If in Berserk
-	if select(2,GetShapeshiftFormInfo(3)) then
-		if stanceCheckBers[spell] then
-        if Stance == "Bers" then
-            if Spell[spell]:Cast(Unit) then
-                return true
-            end
-        else
-            stanceDanceCast(spell, Unit, 3)
-        end
-		elseif stanceCheckBattle[spell] then
-			if Stance == "Battle" then
-				if Spell[spell]:Cast(Unit) then
-					return true
-				end
-			else
+	elseif select(2,GetShapeshiftFormInfo(2)) then
+		if not stanceCheckDefence[spell] then
+			if stanceCheckBattle[spell] then
 				stanceDanceCast(spell, Unit, 1)
-			end
-		elseif stanceCheckDefence[spell] then
-			if Stance == "Defense" then
-				if Spell[spell]:Cast(Unit) then
-					return true
-				end
+			elseif stanceCheckBers[spell] then
+				stanceDanceCast(spell, Unit, 3)
 			else
-				stanceDanceCast(spell, Unit,2)
+				if Spell[spell]:Cast(Unit) then return true end
 			end
 		else
-			if Spell[spell]:Cast(Unit) then
-				return true
-			end
+			if Spell[spell]:Cast(Unit) then return true end
 		end
 	end
 end
@@ -202,17 +139,17 @@ function Warrior.Rotation()
 		end
 	end
 	
---------------------------------------------------------------------------------------		
-------------------------------------- Targeting --------------------------------------
---------------------------------------------------------------------------------------
+	--------------------------------------------------------------------------------------		
+	------------------------------------- Targeting --------------------------------------
+	--------------------------------------------------------------------------------------
 	
 	if Player.Combat and not (Target and Target.ValidEnemy) and #Player:GetEnemies(5) >= 1 and  Setting("AutoTarget") then
 			TargetUnit(DMW.Attackable[1].unit)
 	end
 	
---------------------------------------------------------------------------------------		
-------------------------------------- Opening ----------------------------------------
---------------------------------------------------------------------------------------
+	--------------------------------------------------------------------------------------		
+	------------------------------------- Opening ----------------------------------------
+	--------------------------------------------------------------------------------------
 	
 	if Target and Target.ValidEnemy and Target.Health > 1 then
 		------------
@@ -229,12 +166,15 @@ function Warrior.Rotation()
 			StartAttack(Target.Pointer)
 		end
 		
+		--------------------
+		-- Use BersStance --
+
 		if Setting("Use Berserk Stance") and Player.Combat and Target.Distance <=5 and (Debuff.Rend:Exist(Target) or RendImmune[Target.CreatureType]) then
 			regularCast("StanceBers", Player)
 		end
---------------------------------------------------------------------------------------	
-------------------------------------- Preparation ------------------------------------
---------------------------------------------------------------------------------------
+	--------------------------------------------------------------------------------------	
+	------------------------------------- Preparation ------------------------------------
+	--------------------------------------------------------------------------------------
 	if Player.Combat then	
 			-----------------
 			-- Battleshout --
@@ -272,14 +212,14 @@ function Warrior.Rotation()
 			if (HP <=35 and Spell.Retaliation:CD() == 0) or (HP <=70 and Spell.Retaliation:CD() == 0 and #Player:GetEnemies(5) >= 2) then
 				smartCast("Retaliation", Player)
 			end
---------------------------------------------------------------------------------------		
----------------------------------------- COMBAT --------------------------------------
---------------------------------------------------------------------------------------
+	--------------------------------------------------------------------------------------		
+	------------------------------------- COMBAT -----------------------------------------
+	--------------------------------------------------------------------------------------
 			
 			-------------------
 			-- Berserkerrage --
 			
-			if Stance == "Bers" then
+			if select(2,GetShapeshiftFormInfo(3)) then
 				if Spell.BersRage:IsReady() and Spell.BersRage.Rank > 0 then
 					regularCast("BersRage", Player, true)
 				end
@@ -372,7 +312,7 @@ function Warrior.Rotation()
 			----------
 			-- REND --
 			
-			if Setting("Rend") and Spell.Rend:IsReady() and not (Target.CreatureType == "Elemental" or Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem")then
+			if Setting("Rend") and Spell.Rend:IsReady() and not RendImmune[Target.CreatureType] then
 				if Setting("Spread Rend") then
 					for _,Unit in ipairs(Player:GetEnemies(5)) do
 						if not Debuff.Rend:Exist(Unit) and Unit.TTD >= 4 then
@@ -388,7 +328,7 @@ function Warrior.Rotation()
 			------------
 			-- SUNDER --
 			
-			if Setting("SunderArmor") and Spell.SunderArmor:IsReady() and not (Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
+			if Setting("SunderArmor") and Spell.SunderArmor:IsReady() and not SunderImmune[Target.CreatureType] then
 				if Setting("Spread Sunder") then
 					for _,Unit in ipairs(Player:GetEnemies(5)) do
 						if Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") and Unit.TTD >= 4 then
