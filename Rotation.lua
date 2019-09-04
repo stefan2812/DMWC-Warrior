@@ -61,6 +61,7 @@ local stanceCheckDefence = {
     ["Taunt"] = true
 }
 local stanceCheckBers = {
+	["Execute"] = true,
     ["BersRage"] = true,
 	["SunderArmor"] = true,
     ["Hamstring"] = true,
@@ -70,8 +71,8 @@ local stanceCheckBers = {
     ["Whirlwind"] = true,
 	["Cleave"] = true,
 	["HeroicStrike"] = true,
-	["MortalStrike"] = true,
-    ["Execute"] = true
+	["MortalStrike"] = true
+    
 }
 local function stanceDanceCast(spell, Unit, stance)
     if rageDanceCheck then
@@ -264,7 +265,9 @@ function Warrior.Rotation()
 			-- MortalStrike --
 			
 			if Setting ("MortalStrike") and ((Spell.SweepStrikes:CD() >= .1 and Spell.Whirlwind:CD() >= .1) or #Player:GetEnemies(5) == 1) then
-				smartCast("MortalStrike", Target, true)
+				if Spell.MortalStrike:Cast() then
+					return true
+				end
 			end
 			
 			-----------------
@@ -360,9 +363,13 @@ function Warrior.Rotation()
 				if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.2 and Spell.Whirlwind:CD() >= .1 and Spell.SweepStrikes:CD() >= .1 then
 					if not IsCurrentSpell(845) and not IsCurrentSpell(285) then
 						if #Player:GetEnemies(5) >= 2 then
-							smartCast("Cleave", Target, true)
+							if Spell.Cleave:Cast() then
+								return true
+							end
 						else
-							smartCast("HeroicStrike", Target, true)
+							if Spell.HeroicStrike:Cast() then
+								return true
+							end
 						end
 					end
 				end
@@ -371,10 +378,13 @@ function Warrior.Rotation()
 				if Player.Power >= Setting("Rage Dump") then
 					if not IsCurrentSpell(845) or not IsCurrentSpell(285) then
 						if #Player:GetEnemies(5) >= 2 then
-							smartCast("Cleave", Target, true)
+							if Spell.Cleave:Cast() then
+								return true
+							end
 						else
-							smartCast("HeroicStrike", Target, true)
-						end
+							if Spell.HeroicStrike:Cast() then
+								return true
+							end
 					end
 				end
 			end
