@@ -44,6 +44,7 @@ local stanceCheckBattle = {
     ["Execute"] = true,
 	["Cleave"] = true,
 	["HeroicStrike"] = true,
+	["MortalStrike"] = true,
     ["ShieldBash"] = true
 }
 local stanceCheckDefence = {
@@ -56,6 +57,7 @@ local stanceCheckDefence = {
     ["ShieldWall"] = true,
 	["Cleave"] = true,
 	["HeroicStrike"] = true,
+	["MortalStrike"] = true,
     ["Taunt"] = true
 }
 local stanceCheckBers = {
@@ -68,6 +70,7 @@ local stanceCheckBers = {
     ["Whirlwind"] = true,
 	["Cleave"] = true,
 	["HeroicStrike"] = true,
+	["MortalStrike"] = true,
     ["Execute"] = true
 }
 local function stanceDanceCast(spell, Unit, stance)
@@ -212,27 +215,6 @@ function Warrior.Rotation()
 				end
 			end
 			
-			-------------	
-			-- Execute --
-			if Setting ("Execute all enemies") then
-				if Setting("Execute") then
-					for _,Unit in ipairs(Player:GetEnemies(5)) do
-						if Unit.HP < 20 and Unit.Distance < 5 then
-							local oldTarget = Target and Target.Pointer or false
-							TargetUnit(Unit.Pointer)
-							if smartCast("Execute", Target, true) then
-								if oldTarget ~= false then
-									TargetUnit(oldTarget)
-								end
-							return true
-							end
-						end
-					end
-				end
-			end
-			if not Setting ("Execute all enemies") and Target.HP < 20 then
-				smartCast("Execute", Target, true)
-			end
 			---------------
 			-- OVERPOWER --
 			if #Player.OverpowerUnit > 0 and Spell.Overpower:CD() == 0 then
@@ -256,6 +238,28 @@ function Warrior.Rotation()
 				end
 			end
 			
+			-------------	
+			-- Execute --
+			if Setting ("Execute all enemies") then
+				if Setting("Execute") then
+					for _,Unit in ipairs(Player:GetEnemies(5)) do
+						if Unit.HP < 20 and Unit.Distance < 5 then
+							local oldTarget = Target and Target.Pointer or false
+							TargetUnit(Unit.Pointer)
+							if smartCast("Execute", Target, true) then
+								if oldTarget ~= false then
+									TargetUnit(oldTarget)
+								end
+							return true
+							end
+						end
+					end
+				end
+			end
+			if not Setting ("Execute all enemies") and Target.HP < 20 then
+				smartCast("Execute", Target, true)
+			end
+			
 			-----------------
 			-- Whirlwind# --
 			
@@ -270,6 +274,13 @@ function Warrior.Rotation()
 				smartCast("SweepStrikes",Player, true)
 			end
 
+			---------------------
+			-- MortalStrike --
+			
+			if Setting ("MortalStrike") and Spell.SweepStrikes:CD() >= .1 and Spell.Whirlwind:CD() >= .1 then
+				smartCast("MortalStrike", Target, true)
+			end
+			
 			---------------
 			-- Hamstring --
 			
@@ -357,7 +368,7 @@ function Warrior.Rotation()
 				end
 			end
 			if not Setting("Whirlwind") then
-				if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.2 then
+				if Player.Power >= Setting("Rage Dump") then
 					if not IsCurrentSpell(845) or not IsCurrentSpell(285) then
 						if #Player:GetEnemies(5) >= 2 then
 							smartCast("Cleave", Target, true)
