@@ -375,12 +375,12 @@ function Warrior.Rotation()
 			if Setting("Rend") and Spell.Rend:IsReady() and not (Target.CreatureType == "Elemental" or Target.CreatureType == "Undead" or Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem")then
 				if Setting("Spread Rend") then
 					for _,Unit in ipairs(Player:GetEnemies(5)) do
-						if not Debuff.Rend:Exist(Unit) and Unit.TTD >= 15 then
+						if not Debuff.Rend:Exist(Unit) and Unit.TTD >= 4 then
 							smartCast("Rend", Unit, true)
 						end
 					end
 				end
-				if not Setting("Spread Rend") and Target.TTD >= 15 and not Debuff.Rend:Exist(Target) then
+				if not Setting("Spread Rend") and Target.TTD >= 4 and not Debuff.Rend:Exist(Target) then
 					smartCast("Rend", Target, true)
 				end
 			end
@@ -391,13 +391,13 @@ function Warrior.Rotation()
 			if Setting("SunderArmor") and Spell.SunderArmor:IsReady() and not (Target.CreatureType == "Mechanical" or Target.CreatureType == "Totem") then
 				if Setting("Spread Sunder") then
 					for _,Unit in ipairs(Player:GetEnemies(5)) do
-						if Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") and Unit.TTD >= 15 then
+						if Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") and Unit.TTD >= 4 then
 							regularCast("SunderArmor",Unit,true)
 						end
 					end
 				end
 				if not Setting("Spread Sunder") then
-					if Debuff.SunderArmor:Stacks(Target) < Setting("Apply # Stacks of Sunder Armor") and Target.TTD >= 15 then
+					if Debuff.SunderArmor:Stacks(Target) < Setting("Apply # Stacks of Sunder Armor") and Target.TTD >= 4 then
 						regularCast("SunderArmor",Target,true)
 					end
 				end	
