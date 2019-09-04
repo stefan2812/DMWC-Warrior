@@ -236,7 +236,7 @@ function Warrior.Rotation()
 			---------------
 			-- Bloodrage --
 			if Spell.Bloodrage:IsReady() and HP >= 50 then
-				regularCast("Bloodrage", Player, true)
+				regularCast("Bloodrage", Player)
 			end
 			
 		------------------	
