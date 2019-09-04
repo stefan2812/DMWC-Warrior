@@ -269,7 +269,7 @@ function Warrior.Rotation()
 			-----------------
 			-- Retaliation -- 
 			
-			if HP <=35 and Spell.Retaliation:IsReady() then
+			if (HP <=35 and Spell.Retaliation:CD() == 0) or (HP <=70 and Spell.Retaliation:CD() == 0 and #Player:GetEnemies(5) >= 2) then
 				smartCast("Retaliation", Player)
 			end
 --------------------------------------------------------------------------------------		
@@ -436,7 +436,7 @@ function Warrior.Rotation()
 				end
 			end
 			if not Setting("Whirlwind") then
-				if Player.Power >= Setting("Rage Dump") then
+				if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.2 then
 					if not IsCurrentSpell(845) or not IsCurrentSpell(285) then
 						if #Player:GetEnemies(5) >= 2 then
 							regularCast("Cleave",Target,true)
