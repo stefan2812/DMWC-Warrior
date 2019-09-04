@@ -413,7 +413,7 @@ function Warrior.Rotation()
 			------------------
 			-- Thunder Clap -- 
 			
-			if Setting("ThunderClap") and #Player:GetEnemies(5) >= Setting("Min targets for Thunderclap") and not Debuff.ThunderClap:Exist(Target) and (Buff.SweepingStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1) then
+			if Setting("ThunderClap") and #Player:GetEnemies(5) >= Setting("Min targets for Thunderclap") and not Debuff.ThunderClap:Exist(Target) and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1) then
 				smartCast("ThunderClap", Target, true)
 			end
 		
