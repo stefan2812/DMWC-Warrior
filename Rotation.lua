@@ -184,7 +184,7 @@ function Warrior.Rotation()
 			-- Battleshout --
 			
 			if Setting("BattleShout") and not Buff.BattleShout:Exist(Player) then
-				if regularCast("BattleShout", Player, true) then
+				if regularCast("BattleShout", "", true) then
 					return true
 				end
 			end
@@ -192,7 +192,7 @@ function Warrior.Rotation()
 			---------------
 			-- Bloodrage --
 			if Spell.Bloodrage:IsReady() and HP >= 50 then
-				if regularCast("Bloodrage", Player) then
+				if regularCast("Bloodrage") then
 					return true
 				end
 			end
@@ -204,7 +204,7 @@ function Warrior.Rotation()
 			--------------------
 			-- Defence Stance --
 			if Setting("Use Defense Stance") and #Player:GetEnemies(5) >= 1 and not select(2,GetShapeshiftFormInfo(2)) then
-				if regularCast("StanceDefense", Player) then
+				if regularCast("StanceDefense") then
 					return true
 				end
 			end
@@ -213,7 +213,7 @@ function Warrior.Rotation()
 			-- Shield Block --
 			
 			if Setting("Use ShieldBlock") and HP < Setting("Shieldblock HP") and #Player:GetEnemies(5) >= 1 then
-				if smartCast("ShieldBlock", Player) then
+				if smartCast("ShieldBlock") then
 					return true
 				end
 			end
@@ -222,7 +222,7 @@ function Warrior.Rotation()
 			-- Retaliation -- 
 			
 			if (HP <=35 and Spell.Retaliation:CD() == 0) or (HP <=70 and Spell.Retaliation:CD() == 0 and #Player:GetEnemies(5) >= 2) then
-				if smartCast("Retaliation", Player) then
+				if smartCast("Retaliation") then
 					return true
 				end
 			end
@@ -235,7 +235,7 @@ function Warrior.Rotation()
 			
 			if select(2,GetShapeshiftFormInfo(3)) then
 				if Setting("BersRage") and Spell.BersRage:CD() == 0 then
-					if regularCast("BersRage", Player, true) then
+					if regularCast("BersRage") then
 						return true
 					end
 				end
@@ -245,7 +245,7 @@ function Warrior.Rotation()
 			-- SweepingStrikes --
 			
 			if Setting("SweepingStrikes") and #Player:GetEnemies(5) >= 2 and Spell.SweepStrikes:CD() == 0 then
-				if smartCast("SweepStrikes",Player, true) then
+				if smartCast("SweepStrikes","", true) then
 					return true
 				end
 			end
@@ -312,14 +312,14 @@ function Warrior.Rotation()
 			-- Whirlwind# --
 			
 			if Setting("MortalStrike") then
-				if Setting("Whirlwind") and (#Target:GetEnemies(20) == 1 and Spell.MortalStrike:CD() >= .1) or (#Target:GetEnemies(20) >= 2 and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1)) then
-					if smartCast("Whirlwind", Target, true) then
+				if Setting("Whirlwind") and Target.Distance() <= 8 and (#Target:GetEnemies(20) == 1 and Spell.MortalStrike:CD() >= .1) or (#Target:GetEnemies(20) >= 2 and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1)) then
+					if smartCast("Whirlwind", "", true) then
 						return true
 					end
 				end
 			else
-				if Setting("Whirlwind") and #Target:GetEnemies(20) == 1 or (#Target:GetEnemies(20) >= 2 and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1)) then
-					if smartCast("Whirlwind", Target, true) then
+				if Setting("Whirlwind") and Target.Distance() <= 8 and #Target:GetEnemies(20) == 1 or (#Target:GetEnemies(20) >= 2 and Target.Distance() <= 8 and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1)) then
+					if smartCast("Whirlwind", "", true) then
 						return true
 					end
 				end
@@ -389,7 +389,7 @@ function Warrior.Rotation()
 			-- Demoralizing Shout --
 			
 			if Setting("Demoralizing Shout") and not Debuff.DemoShout:Exist(Target) and #Player:GetEnemies(10) >= Setting("Min targets for Demoralizing Shout") then
-				if regularCast("DemoShout",Target,true) then
+				if regularCast("DemoShout","",true) then
 					return true
 				end
 			end
@@ -407,7 +407,7 @@ function Warrior.Rotation()
 			-- DUMP --
 
 			if Buff.SweepStrikes:Exist(Player) and Spell.Whirlwind:CD() >= .1 then
-				regularCast("Cleave",Target,true)
+				regularCast("Cleave","",true)
 				return true
 			end
 			
@@ -415,9 +415,9 @@ function Warrior.Rotation()
 				if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.2 and Spell.Whirlwind:CD() >= .1 and Spell.SweepStrikes:CD() >= .1 then
 					if not IsCurrentSpell(845) and not IsCurrentSpell(285) then
 						if #Player:GetEnemies(5) >= 2 then
-							regularCast("Cleave",Target,true)
+							regularCast("Cleave","",true)
 						else
-							regularCast("HeroicStrike",Target,true)
+							regularCast("HeroicStrike","",true)
 						end
 					end
 				end
@@ -426,9 +426,9 @@ function Warrior.Rotation()
 				if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.2 then
 					if not IsCurrentSpell(845) or not IsCurrentSpell(285) then
 						if #Player:GetEnemies(5) >= 2 then
-							regularCast("Cleave",Target,true)
+							regularCast("Cleave","",true)
 						else
-							regularCast("HeroicStrike",Target,true)
+							regularCast("HeroicStrike","",true)
 						end
 					end
 				end
