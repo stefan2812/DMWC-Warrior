@@ -134,6 +134,7 @@ function Warrior.Rotation()
     Locals()
 	-------------------------
 	--ReturnToBattleStance --
+	
 	if not select(2,GetShapeshiftFormInfo(1)) and Setting("Return to Battle Stance") and not Player.Combat then
 		if regularCast("StanceBattle", Player) then
 			return true
@@ -172,16 +173,12 @@ function Warrior.Rotation()
 		--------------------
 		-- Use BersStance --
 
-		if Setting("Use Berserk Stance") and Player.Combat and Target.Distance <=5 and (Debuff.Rend:Exist(Target) or RendImmune[Target.CreatureType]) then
-			if regularCast("StanceBers", Player) then
-				return true
-			end
-		end
-		if Player.Combat and not select(2,GetShapeshiftFormInfo(3)) and Spell.Charge:CD() >= 11 and #Target:GetEnemies(20) == 1 then
+		if Setting("Use Berserk Stance") and Player.Combat and not select(2,GetShapeshiftFormInfo(3)) and Spell.Charge:CD() >= 11 and #Target:GetEnemies(20) == 1 then
             if regularCast("StanceBers", Player) then
                 return true
             end
-        end
+		end
+		
 	--------------------------------------------------------------------------------------	
 	------------------------------------- Preparation ------------------------------------
 	--------------------------------------------------------------------------------------
@@ -250,7 +247,7 @@ function Warrior.Rotation()
 			---------------------
 			-- SweepingStrikes --
 			
-			if Setting("SweepingStrikes") and #Player:GetEnemies(5) >= 2 and Spell.SweepStrikes:CD() == 0 then
+			if Setting("SweepingStrikes") and #Player:GetEnemies(5) >= 2 and Spell.SweepStrikes:CD() <= .5 then
 				if smartCast("SweepStrikes",Player, true) then
 					return true
 				end
@@ -283,23 +280,8 @@ function Warrior.Rotation()
 			
 			-------------	
 			-- Execute --
-			if Setting ("Execute all enemies") then
-				if Setting("Execute") then
-					for _,Unit in ipairs(Player:GetEnemies(5)) do
-						if Unit.HP < 20 and Unit.Distance < 5 then
-							local oldTarget = Target and Target.Pointer or false
-							TargetUnit(Unit.Pointer)
-							if smartCast("Execute", Target, true) then
-								if oldTarget ~= false then
-									TargetUnit(oldTarget)
-								end
-							return true
-							end
-						end
-					end
-				end
-			end
-			if not Setting ("Execute all enemies") and Target.HP < 20 then
+
+			if Setting ("Execute") and Target.HP < 20 then
 				if smartCast("Execute", Target, true) then
 					return true
 				end
@@ -352,7 +334,7 @@ function Warrior.Rotation()
 			----------
 			-- REND --
 			
-			if Setting("Rend") and Spell.Rend:IsReady() and not RendImmune[Target.CreatureType] then
+			if Setting("Rend") and not RendImmune[Target.CreatureType] then
 				if Setting("Spread Rend") then
 					for _,Unit in ipairs(Player:GetEnemies(5)) do
 						if not Debuff.Rend:Exist(Unit) and Unit.TTD >= 4 then
@@ -427,7 +409,7 @@ function Warrior.Rotation()
 				end
 			end
 			if not Setting("Whirlwind") then
-				if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.2 then
+				if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.5 then
 					if not IsCurrentSpell(845) or not IsCurrentSpell(285) then
 						if #Player:GetEnemies(5) >= 2 then
 							if regularCast("Cleave",Target,true) then
