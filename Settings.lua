@@ -26,7 +26,8 @@ function Warrior.Settings()
     UI.AddToggle("BattleShout", "Uses Battleshout to Buff", false)
     UI.AddToggle("SweepingStrikes", "Use SweepingStrikes Talent, when two Targets available", false)
 	UI.AddToggle("MortalStrike", "Use MortalStrike", false)
-    
+    	UI.AddToggle("BersRage", "Use Berserker Rage", false)
+	
 	UI.AddHeader("Finisher")
 	UI.AddToggle("Execute", "Use Execute to finish off Target below 20%", false)
 	--UI.AddToggle("Execute all enemies", "Use Execute on all available Units", false)
