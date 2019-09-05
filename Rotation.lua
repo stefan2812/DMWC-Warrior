@@ -234,7 +234,7 @@ function Warrior.Rotation()
 			-- Berserkerrage --
 			
 			if select(2,GetShapeshiftFormInfo(3)) then
-				if Spell.BersRage:IsReady() and Spell.BersRage.Rank > 0 then
+				if Spell.BersRage:IsReady() and not Spell.BersRage.Rank = nil then
 					if regularCast("BersRage", Player, true) then
 						return true
 					end
