@@ -166,7 +166,7 @@ function Warrior.Rotation()
 		---------------
 		-- Hamstring --
 
-		if Player.Combat and Target.HP <= 30 and Target.Distance <= 5 and not Debuff.Hamstring:Exist(Target) then
+		if Player.Combat and Target.HP <= 30 and Target.Distance <= 5 and not Debuff.Hamstring:Exist(Target) and not (#Player.OverpowerUnit > 0 and Spell.Overpower:CD() == 0) then
 			smartCast("Hamstring", Target, true)
 			return true
 		end
