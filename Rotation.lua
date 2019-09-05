@@ -313,13 +313,13 @@ function Warrior.Rotation()
 			
 			if Setting("MortalStrike") then
 				if Setting("Whirlwind") and (#Target:GetEnemies(20) == 1 and Spell.MortalStrike:CD() >= .1) or (#Target:GetEnemies(20) >= 2 and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1)) then
-					if smartCast("Whirlwind") then
+					if smartCast("Whirlwind", Player) then
 						return true
 					end
 				end
 			else
 				if Setting("Whirlwind") and #Target:GetEnemies(20) == 1 or (#Target:GetEnemies(20) >= 2 and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1)) then
-					if smartCast("Whirlwind") then
+					if smartCast("Whirlwind", Player) then
 						return true
 					end
 				end
