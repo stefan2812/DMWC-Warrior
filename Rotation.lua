@@ -234,7 +234,7 @@ function Warrior.Rotation()
 			-- Berserkerrage --
 			
 			if select(2,GetShapeshiftFormInfo(3)) then
-				if Setting("BersRage") and Spell.BersRage:IsReady() then
+				if Setting("BersRage") and Spell.BersRage:CD() == 0) then
 					if regularCast("BersRage", Player, true) then
 						return true
 					end
