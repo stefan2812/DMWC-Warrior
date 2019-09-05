@@ -163,6 +163,14 @@ function Warrior.Rotation()
 			end
 		end
 		
+		---------------
+		-- Hamstring --
+
+		if Player.Combat and Target.HP <= 30 and Target.Distance <= 5 and not Debuff.Hamstring:Exist(Target) then
+			smartCast("Hamstring", Target, true)
+			return true
+		end
+
 		--------------------
 		-- Use BersStance --
 
