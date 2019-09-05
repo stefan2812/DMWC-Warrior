@@ -34,36 +34,37 @@ local SunderImmune = {
 }
 
 local stanceCheckBattle = {
-    ["Overpower"] = true,
-    ["Hamstring"] = true,
-    ["MockingBLow"] = true,
-    ["Rend"] = true,
+	["Overpower"] = true,
+	["Hamstring"] = true,
+	["MockingBLow"] = true,
+	["Rend"] = true,
 	["SunderArmor"] = true,
-    ["Retaliation"] = true,
-    ["SweepStrikes"] = true,
-    ["ThunderClap"] = true,
-    ["Charge"] = true,
-    ["Execute"] = true,
-    ["ShieldBash"] = true
+	["Retaliation"] = true,
+	["SweepStrikes"] = true,
+	["ThunderClap"] = true,
+	["Charge"] = true,
+	["Execute"] = true,
+	["ShieldBash"] = true
 }
 local stanceCheckDefence = {
-    ["Rend"] = true,
+	["Rend"] = true,
 	["SunderArmor"] = true,
-    ["Disarm"] = true,
-    ["Revenge"] = true,
-    ["ShieldBlock"] = true,
-    ["ShieldBash"] = true,
-    ["ShieldWall"] = true,
-    ["Taunt"] = true
+	["Disarm"] = true,
+	["Revenge"] = true,
+	["ShieldBlock"] = true,
+	["ShieldBash"] = true,
+	["ShieldWall"] = true,
+	["Taunt"] = true
 }
 local stanceCheckBers = {
 	["Execute"] = true,
-    ["BersRage"] = true,
+	["BersRage"] = true,
+	["MortalStrike"] = true,
 	["SunderArmor"] = true,
-    ["Hamstring"] = true,
-    ["Intercept"] = true,
+	["Hamstring"] = true,
+	["Intercept"] = true,
     ["Pummel"] = true,
-    ["Recklessness"] = true,
+	["Recklessness"] = true,
     ["Whirlwind"] = true
 }
 
@@ -176,6 +177,11 @@ function Warrior.Rotation()
 				return true
 			end
 		end
+		if Player.Combat and not select(2,GetShapeshiftFormInfo(3)) and Spell.Charge:CD() >= 11 and #Target:GetEnemies(20) == 1 then
+            if regularCast("StanceBers", Player) then
+                return true
+            end
+        end
 	--------------------------------------------------------------------------------------	
 	------------------------------------- Preparation ------------------------------------
 	--------------------------------------------------------------------------------------
@@ -302,8 +308,8 @@ function Warrior.Rotation()
 			---------------------
 			-- MortalStrike --
 			
-			if Setting ("MortalStrike") and ((Spell.SweepStrikes:CD() >= .1 and Spell.Whirlwind:CD() >= .1) or #Player:GetEnemies(5) == 1) then
-				if regularCast("MortalStrike",Target,true) then
+			if Setting ("MortalStrike") and ((Spell.SweepStrikes:CD() >= .1 and Spell.Whirlwind:CD() >= .1) or #Player:GetEnemies(20) == 1) then
+				if smartCast("MortalStrike",Target,true) then
 					return true
 				end
 			end
@@ -312,7 +318,7 @@ function Warrior.Rotation()
 			-- Whirlwind# --
 			
 			if Setting("MortalStrike") then
-				if Setting("Whirlwind") and (#Target:GetEnemies(20) == 1 and Spell.MortalStrike:CD() >= .1) or (#Target:GetEnemies(20) >= 2 and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1)) then
+				if Setting("Whirlwind") and (#Target:GetEnemies(20) == 1 and Spell.MortalStrike:CD() >= .01) or (#Target:GetEnemies(20) >= 2 and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1)) then
 					if smartCast("Whirlwind", Player) then
 						return true
 					end
@@ -404,20 +410,18 @@ function Warrior.Rotation()
 			end
 		
 			----------
-			-- DUMP --
-
-			if Buff.SweepStrikes:Exist(Player) and Spell.Whirlwind:CD() >= .1 then
-				regularCast("Cleave",Target,true)
-				return true
-			end
-			
+			-- DUMP --		
 			if Setting("Whirlwind") then
 				if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.2 and Spell.Whirlwind:CD() >= .1 and Spell.SweepStrikes:CD() >= .1 then
 					if not IsCurrentSpell(845) and not IsCurrentSpell(285) then
 						if #Player:GetEnemies(5) >= 2 then
-							regularCast("Cleave",Target,true)
+							if regularCast("Cleave",Target,true) then
+								return true
+							end
 						else
-							regularCast("HeroicStrike",Target,true)
+							if regularCast("HeroicStrike",Target,true) then
+								return true
+							end
 						end
 					end
 				end
@@ -426,9 +430,13 @@ function Warrior.Rotation()
 				if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.2 then
 					if not IsCurrentSpell(845) or not IsCurrentSpell(285) then
 						if #Player:GetEnemies(5) >= 2 then
-							regularCast("Cleave",Target,true)
+							if regularCast("Cleave",Target,true) then
+								return true
+							end
 						else
-							regularCast("HeroicStrike",Target,true)
+							if regularCast("HeroicStrike",Target,true) then
+								return true
+							end
 						end
 					end
 				end
