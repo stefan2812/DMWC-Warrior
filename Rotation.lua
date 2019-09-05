@@ -252,6 +252,12 @@ function Warrior.Rotation()
 						return true
 					end
 				end
+			else
+				if Setting("BersRage") and Spell.BersRage:CD() == 0 and (Target:GetEnemies(5) == 1 or Buff.SweepStrikes:Exist() or not Spell.SweepStrikes:CD() == 0) then
+					if smartCast("BersRage") then
+						return true
+					end
+				end
 			end
 			
 			---------------------
