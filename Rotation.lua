@@ -163,13 +163,6 @@ function Warrior.Rotation()
 			end
 		end
 		
-		-----------------
-		-- Auto Attack --
-		
-		if not IsCurrentSpell(6603) and Target.Distance <= 5 then
-			StartAttack(Target.Pointer)
-		end
-		
 		--------------------
 		-- Use BersStance --
 
@@ -178,6 +171,15 @@ function Warrior.Rotation()
                 return true
             end
 		end
+
+		-----------------
+		-- Auto Attack --
+		
+		if not IsCurrentSpell(6603) and Target.Distance <= 5 then
+			StartAttack(Target.Pointer)
+		end
+		
+		
 		
 	--------------------------------------------------------------------------------------	
 	------------------------------------- Preparation ------------------------------------
