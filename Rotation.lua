@@ -166,7 +166,7 @@ function Warrior.Rotation()
 		---------------
 		-- Hamstring --
 
-		if Player.Combat and Target.HP <= 30 and Target.Distance <= 5 and not Debuff.Hamstring:Exist(Target) and not (#Player.OverpowerUnit > 0 and Spell.Overpower:CD() == 0) then
+		if Setting("Hamstring on low mob") and Player.Combat and Target.HP <= 30 and Target.Distance <= 5 and not Debuff.Hamstring:Exist(Target) and not (#Player.OverpowerUnit > 0 and Spell.Overpower:CD() == 0) then
 			smartCast("Hamstring", Target, true)
 			return true
 		end
@@ -204,7 +204,7 @@ function Warrior.Rotation()
 			
 			---------------
 			-- Bloodrage --
-			if Spell.Bloodrage:IsReady() and HP >= 50 then
+			if Setting("Bloodrage") and Spell.Bloodrage:IsReady() and HP >= 50 then
 				if regularCast("Bloodrage", Player) then
 					return true
 				end
