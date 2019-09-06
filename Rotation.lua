@@ -15,10 +15,10 @@ local function Locals()
     Target = Player.Target or false
     HUD = DMW.Settings.profile.HUD
 	CDs = Player:CDs()
-	if Mining and (DMW.Time - Mining) > 2.3 then
+	if Mining and (DMW.Time - Mining) > 2.5 then
 		Mining = false
 	end
-	if Herb and (DMW.Time - Mining) > 2.3 then
+	if Herb and (DMW.Time - Mining) > 2.5 then
 		Herb = false
 	end
     if Talent.TacticalMastery.Rank >= 4 then
