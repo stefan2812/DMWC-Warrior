@@ -263,7 +263,7 @@ function Warrior.Rotation()
 			---------------------
 			-- SweepingStrikes --
 			
-			if Setting("SweepingStrikes") and #Player:GetEnemies(8) >= 2 and Spell.SweepStrikes:CD() <= .5 then
+			if Setting("SweepingStrikes") and #Player:GetEnemies(8) >= 2 and Spell.SweepStrikes:CD() == 0 then
 				if smartCast("SweepStrikes",Player, true) then
 					return true
 				end
@@ -441,26 +441,4 @@ function Warrior.Rotation()
 			end
 		end -- if Combat end
 	end -- if valid target end
-
-	--------------
-	----Helper----
-	--------------
-
-	if not Player.Combat and not Mining then
-		for _, Object in pairs(DMW.GameObjects) do
-			if Object.Ore and Object.Distance <= 3 then
-				InteractUnit(Object.Pointer)
-				Mining = DMW.Time
-			end
-		end
-	end
-	if not Player.Combat and not Herb then
-		for _, Object in pairs(DMW.GameObjects) do
-			if Object.Herbs and Object.Distance <= 3 then
-				InteractUnit(Object.Pointer)
-				Herb = DMW.Time
-			end
-		end
-	end
-
 end -- Rotation end
