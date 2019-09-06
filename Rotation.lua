@@ -176,8 +176,12 @@ function Warrior.Rotation()
 
 		if Setting("Use Berserk Stance") and Player.Combat and not select(2,GetShapeshiftFormInfo(3)) and Spell.Charge:CD() >= 11 and #Target:GetEnemies(20) == 1 then
             if regularCast("StanceBers", Player) then
-                return true
-            end
+				return true
+			end
+		elseif Setting("Use Berserk Stance") and Player.Combat and not select(2,GetShapeshiftFormInfo(3)) and Spell.Charge:CD() >= 11 and #Target:GetEnemies(20) >= 2 then
+			if smartCast("SweepStrikes", Player, true) then
+				return true
+			end
 		end
 
 		-----------------
@@ -214,11 +218,14 @@ function Warrior.Rotation()
 			---------------
 			-- Bloodrage --
 			if Setting("Bloodrage") and Spell.Bloodrage:IsReady() and HP >= 50 then
-				if regularCast("Bloodrage", Player) then
-					return true
-				end
+				regularCast("Bloodrage", Player)
 			end
-			
+			---------------
+			-- Bers Rage --
+			if Setting("BersRage") and Spell.BersRage:CD() == 0 and Target.TTD >= 4 then
+				smartCast("BersRage", Player)
+			end
+
 		------------------	
 		--DEFENSE PHASE---
 		------------------
@@ -257,9 +264,7 @@ function Warrior.Rotation()
 			
 			if select(2,GetShapeshiftFormInfo(3)) then
 				if Setting("BersRage") and Spell.BersRage:CD() == 0 then
-					if regularCast("BersRage",Player) then
-						return true
-					end
+					regularCast("BersRage",Player)
 				end
 			end
 			
