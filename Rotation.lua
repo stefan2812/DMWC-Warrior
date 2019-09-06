@@ -15,12 +15,6 @@ local function Locals()
     Target = Player.Target or false
     HUD = DMW.Settings.profile.HUD
 	CDs = Player:CDs()
-	if Mining and (DMW.Time - Mining) > 2.5 then
-		Mining = false
-	end
-	if Herb and (DMW.Time - Mining) > 2.5 then
-		Herb = false
-	end
     if Talent.TacticalMastery.Rank >= 4 then
         rageDanceCheck = true
     else
@@ -207,6 +201,15 @@ function Warrior.Rotation()
 					return true
 				end
 			end
+
+			---------------------
+			-- SweepingStrikes --
+			
+			if Setting("SweepingStrikes") and #Player:GetEnemies(8) >= 2 and Spell.SweepStrikes:CD() == 0 then
+				if smartCast("SweepStrikes",Player, true) then
+					return true
+				end
+			end
 			
 			---------------
 			-- Bloodrage --
@@ -257,15 +260,6 @@ function Warrior.Rotation()
 					if regularCast("BersRage",Player) then
 						return true
 					end
-				end
-			end
-			
-			---------------------
-			-- SweepingStrikes --
-			
-			if Setting("SweepingStrikes") and #Player:GetEnemies(8) >= 2 and Spell.SweepStrikes:CD() == 0 then
-				if smartCast("SweepStrikes",Player, true) then
-					return true
 				end
 			end
 			
