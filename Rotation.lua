@@ -248,13 +248,7 @@ function Warrior.Rotation()
 			
 			if select(2,GetShapeshiftFormInfo(3)) then
 				if Setting("BersRage") and Spell.BersRage:CD() == 0 then
-					if regularCast("BersRage") then
-						return true
-					end
-				end
-			else
-				if Setting("BersRage") and Spell.BersRage:CD() == 0 and (Target:GetEnemies(5) == 1 or Buff.SweepStrikes:Exist() or not Spell.SweepStrikes:CD() == 0) then
-					if smartCast("BersRage") then
+					if regularCast("BersRage",Player) then
 						return true
 					end
 				end
