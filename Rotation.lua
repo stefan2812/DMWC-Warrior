@@ -263,7 +263,7 @@ function Warrior.Rotation()
 			---------------------
 			-- SweepingStrikes --
 			
-			if Setting("SweepingStrikes") and #Player:GetEnemies(6) >= 2 and Spell.SweepStrikes:CD() <= .5 then
+			if Setting("SweepingStrikes") and #Player:GetEnemies(8) >= 2 and Spell.SweepStrikes:CD() <= .5 then
 				if smartCast("SweepStrikes",Player, true) then
 					return true
 				end
@@ -410,7 +410,7 @@ function Warrior.Rotation()
 			----------
 			-- DUMP --		
 			if Setting("Whirlwind") then
-				if Player.Power >= Setting("Rage Dump") and Spell.Whirlwind:CD() >= .1 and Spell.SweepStrikes:CD() >= .1 then
+				if Player.Power >= Setting("Rage Dump") and Spell.Whirlwind:CD() >= .1 and Spell.SweepStrikes:CD() >= .1 and Player.SwingLeft <= 0.4 then
 					if not IsCurrentSpell(845) and not IsCurrentSpell(285) then
 						if #Player:GetEnemies(5) >= 2 then
 							if regularCast("Cleave",Target,true) then
@@ -425,7 +425,7 @@ function Warrior.Rotation()
 				end
 			end
 			if not Setting("Whirlwind") then
-				if Player.Power >= Setting("Rage Dump") then
+				if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.4 then
 					if not IsCurrentSpell(845) or not IsCurrentSpell(285) then
 						if #Player:GetEnemies(5) >= 2 then
 							if regularCast("Cleave",Target,true) then
@@ -462,5 +462,5 @@ function Warrior.Rotation()
 			end
 		end
 	end
-	
+
 end -- Rotation end
