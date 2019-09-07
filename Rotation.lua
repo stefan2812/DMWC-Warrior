@@ -78,10 +78,10 @@ local function regularCast(spell, Unit, pool)
         return true
     end
 end
-local function DumpBeforeDance(value)
+local function DumpBeforeDance(value, spell)
 	if Setting("Debug") then
 		if (value ~= prev) then
-			print("Dumping "..tostring(value).." Rage - Current: "..tostring(Player.Power).." Rage")
+			print("Dumping "..tostring(value).." Rage - Current: "..tostring(Player.Power).." Rage - to cast spell: "..tostring(spell))
 			prev = value
 		end
 	end
@@ -132,11 +132,13 @@ local function smartCast(spell, Unit, pool)
         end
 		return true
 	end
-
 	if Setting("Dont waste more then 5 rage when Dancing") and Player.Power >= 31 then
-		if DumpBeforeDance(Player.Power - 25) then
+		if DumpBeforeDance(Player.Power - 25, spell) then
 			return true
 		end
+	end
+	if Setting("Whirlwind") and spell == "Rend" and Spell.Whirlwind:CD() == 0 then
+		return true
 	end
 
 	timer = DMW.Time
@@ -358,8 +360,14 @@ function Warrior.Rotation()
 			-- Execute --
 
 			if Setting ("Execute") and Target.HP < 20 then
-				if smartCast("Execute", Target, true) then
-					return true
+				if not select(2,GetShapeshiftFormInfo(1)) then
+					if smartCast("Execute", Target, true) then
+						return true
+					end
+				else
+					if regularCast("Execute", Target, true) then
+						return true
+					end
 				end
 			end
 			
@@ -377,14 +385,18 @@ function Warrior.Rotation()
 			
 			if Setting("MortalStrike") then
 				if Setting("Whirlwind") and (#Target:GetEnemies(20) == 1 and Spell.MortalStrike:CD() >= .01) or (#Target:GetEnemies(20) >= 2 and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1)) then
-					if smartCast("Whirlwind", Player) then
-						return true
+					if Spell.Whirlwind:CD() == 0 and Target.HP >= 20 then
+						if smartCast("Whirlwind", Player) then
+							return true
+						end
 					end
 				end
 			else
 				if Setting("Whirlwind") and #Target:GetEnemies(20) == 1 or (#Target:GetEnemies(20) >= 2 and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1)) then
-					if smartCast("Whirlwind", Player) then
-						return true
+					if Spell.Whirlwind:CD() == 0 and Target.HP >= 20 then
+						if smartCast("Whirlwind", Player) then
+							return true
+						end
 					end
 				end
 			end
@@ -409,7 +421,7 @@ function Warrior.Rotation()
 		
 			----------
 			-- REND --
-			
+
 			if Setting("Rend") and not RendImmune[Target.CreatureType] then
 				if Setting("Spread Rend") then
 					for _,Unit in ipairs(Player:GetEnemies(5)) do
@@ -426,7 +438,6 @@ function Warrior.Rotation()
 					end
 				end
 			end
-			
 			------------
 			-- SUNDER --
 			
@@ -470,15 +481,21 @@ function Warrior.Rotation()
 			----------
 			-- DUMP --		
 			if Setting("Whirlwind") then
-				if Player.Power >= Setting("Rage Dump") and Spell.Whirlwind:CD() >= .1 and Spell.SweepStrikes:CD() >= .1 and Player.SwingLeft <= 0.4 then
-					if not IsCurrentSpell(845) and not IsCurrentSpell(285) then
-						if #Player:GetEnemies(5) >= 2 then
-							if regularCast("Cleave",Target,true) then
-								return true
-							end
-						else
-							if regularCast("HeroicStrike",Target,true) then
-								return true
+				if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.4 then
+					if Spell.Whirlwind:CD() == 0 and select(2,GetShapeshiftFormInfo(3)) then
+						if regularCast("Whirlwind", Player) then
+							return true
+						end
+					else
+						if not IsCurrentSpell(845) and not IsCurrentSpell(285) then
+							if #Player:GetEnemies(5) >= 2 then
+								if regularCast("Cleave",Target,true) then
+									return true
+								end
+							else
+								if regularCast("HeroicStrike",Target,true) then
+									return true
+								end
 							end
 						end
 					end
