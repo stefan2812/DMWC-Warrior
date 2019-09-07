@@ -134,10 +134,8 @@ local function smartCast(spell, Unit, pool)
 	end
 
 	if Setting("Dont waste more then 5 rage when Dancing") and Player.Power >= 31 then
-		if Player.Power >= Spell[spell]:Cost() then
-			if DumpBeforeDance(Player.Power - Spell[spell]:Cost()) then
-				return true
-			end
+		if DumpBeforeDance(Player.Power - 25) then
+			return true
 		end
 	end
 
