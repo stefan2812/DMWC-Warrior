@@ -239,7 +239,7 @@ function Warrior.Rotation()
             if regularCast("StanceBers", Player) then
 				return true
 			end
-		elseif Setting("Use Berserk Stance") and Player.Combat and not select(2,GetShapeshiftFormInfo(3)) and Spell.Charge:CD() >= 11 and #Target:GetEnemies(20) >= 2 then
+		elseif Setting("Use Berserk Stance") and Player.Combat and not select(2,GetShapeshiftFormInfo(3)) and Spell.Charge:CD() >= 11 and #Target:GetEnemies(8) >= 2 then
 			if smartCast("SweepStrikes", Player, true) then
 				return true
 			end
