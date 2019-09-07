@@ -2,7 +2,7 @@ local DMW = DMW
 local Warrior = DMW.Rotations.WARRIOR
 local Rotation = DMW.Helpers.Rotation
 local Setting = DMW.Helpers.Rotation.Setting
-local Player, Buff, Debuff, Spell, Stance, Target, Talent, Item, GCD, CDs, HUD, rageDanceCheck
+local Player, Buff, Debuff, Spell, Stance, Target, Talent, Item, GCD, CDs, HUD, rageDanceCheck, timer
 
 local function Locals()
     Player = DMW.Player
@@ -19,7 +19,10 @@ local function Locals()
         rageDanceCheck = true
     else
         rageDanceCheck = false
-    end
+	end
+	if timer == nil then 
+		timer = DMW.Time 
+	end
 end
 
 local RendImmune = {
@@ -32,7 +35,6 @@ local SunderImmune = {
 	["Totem"] = true,
 	["Mechanical"] = true
 }
-
 local stanceCheckBattle = {
 	["Overpower"] = true,
 	["Hamstring"] = true,
@@ -68,8 +70,52 @@ local stanceCheckBers = {
     ["Whirlwind"] = true
 }
 
+local function regularCast(spell, Unit, pool)
+    if pool and Spell[spell]:Cost() > Player.Power then
+        return true
+    end
+	if Spell[spell]:Cast(Unit) then
+        return true
+    end
+end
+local function DumpBeforeDance(value)
+	if Setting("Debug") then
+		if (value ~= prev) then
+			print("Dumping "..tostring(value).." Rage - Current: "..tostring(Player.Power).." Rage")
+			prev = value
+		end
+	end
+    if value >= 30 then
+		if Setting("MortalStrike") and Spell.MortalStrike:Cast(Target) then 
+			return true 
+		end
+    elseif value >= 20 then
+            if #Player:GetEnemies(5) >= 2 then
+				if Spell.ThunderClap:Cast(Target) then 
+					return true 
+				end
+				if regularCast("Cleave") then
+					return true
+				end
+			else
+				if regularCast("HeroicStrike") then
+					return true
+				end
+			end
+    elseif value >= 10 then
+		if Spell.Hamstring:Cast(Target) then 
+			return true 
+		end
+    end
+end
 local function stanceDanceCast(spell, Unit, stance)
-    if rageDanceCheck then
+	if rageDanceCheck then
+		if Setting("Debug") then
+			if spell ~= prevs then
+				print("spell = "..tostring(spell).." , Unit = ".. tostring(Unit) .. " , stance = "..tostring(stance))
+				prevs = spell
+			end
+		end
         if stance == 1 then
             if Spell.StanceBattle:Cast() then end
         elseif stance == 2 then
@@ -79,18 +125,23 @@ local function stanceDanceCast(spell, Unit, stance)
         end
     end
 end
-local function regularCast(spell, Unit, pool)
-    if pool and Spell[spell]:Cost() > Player.Power then
-        return true
-    end
-	if Spell[spell]:Cast(Unit) then
-        return true
-    end
-end
 local function smartCast(spell, Unit, pool)
     if pool and Spell[spell]:Cost() > Player.Power then
-        return true
-    end
+		if spell == "SweepStrikes" and not select(2,GetShapeshiftFormInfo(1)) then
+            Spell.StanceBattle:Cast()
+        end
+		return true
+	end
+
+	if Setting("Dont waste more then 5 rage when Dancing") and Player.Power >= 31 then
+		if Player.Power >= Spell[spell]:Cost() then
+			if DumpBeforeDance(Player.Power - Spell[spell]:Cost()) then
+				return true
+			end
+		end
+	end
+
+	timer = DMW.Time
 	if select(2,GetShapeshiftFormInfo(1)) then
 		if not stanceCheckBattle[spell] then
 			if stanceCheckDefence[spell] then
@@ -131,7 +182,19 @@ local function smartCast(spell, Unit, pool)
 end
 
 function Warrior.Rotation()
-    Locals()
+	Locals()
+	if not Player.Combat and Setting("Debug") then
+		if not prevs == nil then  
+			prevs = nil
+		end
+		if not prev == nil then
+			prev = nil
+		end
+	end
+
+	if DMW.Time <= timer + 0.3 then 
+		return true 
+	end
 	-------------------------
 	--ReturnToBattleStance --
 	
