@@ -110,6 +110,9 @@ local function DumpBeforeDance(value, spell)
 end
 local function stanceDanceCast(spell, Unit, stance)
 	if rageDanceCheck then
+		if Setting("Whirlwind") and spell == "Rend" and Spell.Whirlwind:CD() == 0 then
+			return true
+		end
 		if Setting("Debug") then
 			if spell ~= prevs then
 				print("spell = "..tostring(spell).." , Unit = ".. tostring(Unit) .. " , stance = "..tostring(stance))
@@ -283,6 +286,7 @@ function Warrior.Rotation()
 			if Setting("Bloodrage") and Spell.Bloodrage:IsReady() and HP >= 50 then
 				regularCast("Bloodrage", Player)
 			end
+
 			---------------
 			-- Bers Rage --
 			if Setting("BersRage") and Spell.BersRage:CD() == 0 and Target.TTD >= 4 then
@@ -438,6 +442,7 @@ function Warrior.Rotation()
 					end
 				end
 			end
+
 			------------
 			-- SUNDER --
 			
