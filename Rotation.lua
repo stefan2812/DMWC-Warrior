@@ -103,7 +103,7 @@ local function DumpBeforeDance(value, spell)
 				end
 			end
     elseif value >= 10 then
-		if Spell.Hamstring:Cast(Target) then 
+		if Spell.Hamstring:Cast(Target) and not Debuff.Hamstring:Exist(Target) then 
 			return true 
 		end
     end
