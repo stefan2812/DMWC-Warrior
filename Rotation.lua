@@ -272,6 +272,9 @@ function Warrior.Rotation()
 				end
 			end
 
+			---------------
+			-- Interrupt --
+			
 			if Setting("Interrupt with Pummel") and Spell.Pummel:Known() then
 				for _, Unit in ipairs(Player:GetEnemies(15)) do
 					if Unit:Interrupt() then
