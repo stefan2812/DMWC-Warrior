@@ -429,9 +429,11 @@ function Warrior.Rotation()
 			-------------
 			-- Disarm --
 			
-			if Target.Player and Spell.Disarm:CD() == 0 and Debuff.Hamstring:Exist(Target) then
-				if smartCast("Disarm",Target, true) then
-					return true
+			if Setting("Use Disarm") then
+				if Target.Player and Spell.Disarm:CD() == 0 and Debuff.Hamstring:Exist(Target) then
+					if smartCast("Disarm",Target, true) then
+						return true
+					end
 				end
 			end
 		
