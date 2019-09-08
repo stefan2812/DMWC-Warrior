@@ -70,6 +70,16 @@ local stanceCheckBers = {
     ["Whirlwind"] = true
 }
 
+local function Interrupt()
+	for _, Unit in ipairs(Player:GetEnemies(5)) do
+		if Unit:Interrupt() then
+			if smartCast("Pummel",Unit,true) then
+				return true
+			end
+		end
+	end
+end
+
 local function regularCast(spell, Unit, pool)
     if pool and Spell[spell]:Cost() > Player.Power then
         return true
@@ -272,6 +282,9 @@ function Warrior.Rotation()
 				end
 			end
 
+			if Interrupt () and Setting("Interrupt with Pummel") and Spell.Pummel:Known() then
+				return true
+			end
 			---------------------
 			-- SweepingStrikes --
 			
