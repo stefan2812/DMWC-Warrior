@@ -71,7 +71,7 @@ local stanceCheckBers = {
 }
 
 local function Interrupt()
-	for _, Unit in ipairs(Player:GetEnemies(5)) do
+	for _, Unit in ipairs(Player:GetEnemies(15)) do
 		if Unit:Interrupt() then
 			if smartCast("Pummel",Unit,true) then
 				return true
@@ -282,8 +282,10 @@ function Warrior.Rotation()
 				end
 			end
 
-			if Interrupt () and Setting("Interrupt with Pummel") and Spell.Pummel:Known() then
-				return true
+			if Setting("Interrupt with Pummel") and Spell.Pummel:Known() then
+				if Interrupt () then
+					return true
+				end
 			end
 			---------------------
 			-- SweepingStrikes --
