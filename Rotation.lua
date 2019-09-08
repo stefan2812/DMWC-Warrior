@@ -274,7 +274,7 @@ function Warrior.Rotation()
 
 			---------------
 			-- Interrupt --
-			
+
 			if Setting("Interrupt with Pummel") and Spell.Pummel:Known() then
 				for _, Unit in ipairs(Player:GetEnemies(15)) do
 					if Unit:Interrupt() then
@@ -429,7 +429,7 @@ function Warrior.Rotation()
 			-------------
 			-- Disarm --
 			
-			if Spell.Disarm:CD() == 0 and Debuff.Hamstring:Exist(Target) then
+			if Target.Player and Spell.Disarm:CD() == 0 and Debuff.Hamstring:Exist(Target) then
 				if smartCast("Disarm",Target, true) then
 					return true
 				end
