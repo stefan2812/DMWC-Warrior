@@ -143,7 +143,6 @@ local function smartCast(spell, Unit, pool)
 	if Setting("Whirlwind") and spell == "Rend" and Spell.Whirlwind:CD() == 0 then
 		return true
 	end
-
 	timer = DMW.Time
 	if select(2,GetShapeshiftFormInfo(1)) then
 		if not stanceCheckBattle[spell] then
@@ -186,6 +185,9 @@ end
 
 function Warrior.Rotation()
 	Locals()
+	-------------------
+	-- Debug Setting --
+
 	if not Player.Combat and Setting("Debug") then
 		if not prevs == nil then  
 			prevs = nil
@@ -195,9 +197,13 @@ function Warrior.Rotation()
 		end
 	end
 
+	------------------------
+	-- control dance pace --
+
 	if DMW.Time <= timer + 0.3 then 
 		return true 
 	end
+	
 	-------------------------
 	--ReturnToBattleStance --
 	
