@@ -545,9 +545,9 @@ function Warrior.Rotation()
 		
 			----------
 			-- DUMP --		
-			if Setting("Whirlwind") then
+			if Setting("Whirlwind") and Spell.Whirlwind:Known() then
 				if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.4 then
-					if Spell.Whirlwind:CD() == 0 and select(2,GetShapeshiftFormInfo(3)) and Spell.Whirlwind:Known() then
+					if Spell.Whirlwind:CD() == 0 and select(2,GetShapeshiftFormInfo(3)) then
 						if regularCast("Whirlwind", Player) then
 							return true
 						end
