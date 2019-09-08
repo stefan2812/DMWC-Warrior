@@ -388,7 +388,7 @@ function Warrior.Rotation()
 			-- Whirlwind# --
 			
 			if Setting("MortalStrike") then
-				if Setting("Whirlwind") and (#Target:GetEnemies(20) == 1 and Spell.MortalStrike:CD() >= .01) or (#Target:GetEnemies(20) >= 2 and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1)) then
+				if Target.Distance <= 8 and Setting("Whirlwind") and (#Target:GetEnemies(20) == 1 and Spell.MortalStrike:CD() >= .01) or (#Target:GetEnemies(20) >= 2 and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1)) then
 					if Spell.Whirlwind:CD() == 0 and Target.HP >= 20 then
 						if smartCast("Whirlwind", Player) then
 							return true
@@ -396,7 +396,7 @@ function Warrior.Rotation()
 					end
 				end
 			else
-				if Setting("Whirlwind") and #Target:GetEnemies(20) == 1 or (#Target:GetEnemies(20) >= 2 and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1)) then
+				if Target.Distance <= 8 and Setting("Whirlwind") and #Target:GetEnemies(20) == 1 or (#Target:GetEnemies(20) >= 2 and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1)) then
 					if Spell.Whirlwind:CD() == 0 and Target.HP >= 20 then
 						if smartCast("Whirlwind", Player) then
 							return true
