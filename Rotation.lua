@@ -183,7 +183,7 @@ local function smartCast(spell, Unit, pool)
 	
 	---------------------------------------
 	-- Check required Stance to Dance to --
-	
+
 	if select(2,GetShapeshiftFormInfo(1)) then
 		if not stanceCheckBattle[spell] then
 			if stanceCheckDefence[spell] then
@@ -247,7 +247,7 @@ function Warrior.Rotation()
 	-------------------------
 	--ReturnToBattleStance --
 	
-	if not select(2,GetShapeshiftFormInfo(1)) and Setting("Return to Battle Stance") and not Player.Combat then
+	if not select(2,GetShapeshiftFormInfo(1)) and Setting("Return to Battle Stance") and not Player.Combat and Spell.StanceBattle:Known() then
 		if regularCast("StanceBattle", Player) then
 			return true
 		end
@@ -269,7 +269,7 @@ function Warrior.Rotation()
 		------------
 		-- CHARGE --
 		
-		if Setting("Charge") and not Player.Combat and Target.Distance <= 25 and Target.Distance >= 8 and HP >= 40 then
+		if Setting("Charge") and not Player.Combat and Target.Distance <= 25 and Target.Distance >= 8 and HP >= 40 and Spell.Charge:Known() then
 			if smartCast("Charge", Target) then
 				return true 
 			end
@@ -278,7 +278,7 @@ function Warrior.Rotation()
 		---------------
 		-- Hamstring --
 
-		if Setting("Hamstring on low mob") and Player.Combat and Target.HP <= 30 and Target.Distance <= 5 and not Debuff.Hamstring:Exist(Target) and not (#Player.OverpowerUnit > 0 and Spell.Overpower:CD() == 0) then
+		if Setting("Hamstring on low mob") and Player.Combat and Spell.Hamstring:Known() and Target.HP <= 30 and Target.Distance <= 5 and not Debuff.Hamstring:Exist(Target) and not (#Player.OverpowerUnit > 0 and Spell.Overpower:CD() == 0) then
 			smartCast("Hamstring", Target, true)
 			return true
 		end
@@ -286,11 +286,11 @@ function Warrior.Rotation()
 		--------------------
 		-- Use BersStance --
 
-		if Setting("Use Berserk Stance") and Player.Combat and not select(2,GetShapeshiftFormInfo(3)) and Spell.Charge:CD() >= 11 and #Target:GetEnemies(20) == 1 then
+		if Setting("Use Berserk Stance") and Player.Combat and not select(2,GetShapeshiftFormInfo(3)) and Spell.Charge:CD() >= 11 and #Target:GetEnemies(20) == 1 and Spell.StanceBers:Known() then
             if regularCast("StanceBers", Player) then
 				return true
 			end
-		elseif Setting("Use Berserk Stance") and Player.Combat and not select(2,GetShapeshiftFormInfo(3)) and Spell.Charge:CD() >= 11 and #Target:GetEnemies(8) >= 2 then
+		elseif Setting("Use Berserk Stance") and Player.Combat and not select(2,GetShapeshiftFormInfo(3)) and Spell.Charge:CD() >= 11 and #Target:GetEnemies(8) >= 2 and Spell.SweepStrikes:Known() then
 			if smartCast("SweepStrikes", Player, true) then
 				return true
 			end
@@ -312,7 +312,7 @@ function Warrior.Rotation()
 			-----------------
 			-- Battleshout --
 			
-			if Setting("BattleShout") and not Buff.BattleShout:Exist(Player) then
+			if Setting("BattleShout") and not Buff.BattleShout:Exist(Player) and Spell.BattleShout:Known() then
 				if regularCast("BattleShout", Player, true) then
 					return true
 				end
@@ -333,7 +333,7 @@ function Warrior.Rotation()
 			---------------------
 			-- SweepingStrikes --
 			
-			if Setting("SweepingStrikes") and #Player:GetEnemies(8) >= 2 and Spell.SweepStrikes:CD() == 0 then
+			if Setting("SweepingStrikes") and #Player:GetEnemies(8) >= 2 and Spell.SweepStrikes:CD() == 0 and Spell.SweepStrikes:Known() then
 				if smartCast("SweepStrikes",Player, true) then
 					return true
 				end
@@ -341,13 +341,13 @@ function Warrior.Rotation()
 			
 			---------------
 			-- Bloodrage --
-			if Setting("Bloodrage") and Spell.Bloodrage:IsReady() and HP >= 50 then
+			if Setting("Bloodrage") and Spell.Bloodrage:IsReady() and HP >= 50 and Spell.Bloodrage:Known() then
 				regularCast("Bloodrage", Player)
 			end
 
 			---------------
 			-- Bers Rage --
-			if Setting("BersRage") and Spell.BersRage:CD() == 0 and Target.TTD >= 4 then
+			if Setting("BersRage") and Spell.BersRage:CD() == 0 and Target.TTD >= 4 and Spell.BersRage:Known() then
 				smartCast("BersRage", Player)
 			end
 
@@ -357,7 +357,7 @@ function Warrior.Rotation()
 		
 			--------------------
 			-- Defence Stance --
-			if Setting("Use Defense Stance") and #Player:GetEnemies(5) >= 1 and not select(2,GetShapeshiftFormInfo(2)) then
+			if Setting("Use Defense Stance") and #Player:GetEnemies(5) >= 1 and not select(2,GetShapeshiftFormInfo(2)) and Spell.StanceDefense:Known() then
 				if regularCast("StanceDefense", Player) then
 					return true
 				end
@@ -366,7 +366,7 @@ function Warrior.Rotation()
 			------------------
 			-- Shield Block --
 			
-			if Setting("Use ShieldBlock") and HP < Setting("Shieldblock HP") and #Player:GetEnemies(5) >= 1 then
+			if Setting("Use ShieldBlock") and HP < Setting("Shieldblock HP") and #Player:GetEnemies(5) >= 1 and Spell.ShieldBlock:Known() then
 				if smartCast("ShieldBlock", Player) then
 					return true
 				end
@@ -375,7 +375,7 @@ function Warrior.Rotation()
 			-----------------
 			-- Retaliation -- 
 			
-			if Setting("Retaliation") and ((HP <=35 and Spell.Retaliation:CD() == 0) or (HP <=70 and Spell.Retaliation:CD() == 0 and #Player:GetEnemies(5) >= 2)) then
+			if Setting("Retaliation") and Spell.Retaliation:Known() and ((HP <=35 and Spell.Retaliation:CD() == 0) or (HP <=70 and Spell.Retaliation:CD() == 0 and #Player:GetEnemies(5) >= 2)) then
 				if smartCast("Retaliation", Player) then
 					return true
 				end
@@ -388,14 +388,14 @@ function Warrior.Rotation()
 			-- Berserkerrage --
 			
 			if select(2,GetShapeshiftFormInfo(3)) then
-				if Setting("BersRage") and Spell.BersRage:CD() == 0 then
+				if Setting("BersRage") and Spell.BersRage:CD() == 0 and Spell.BersRage:Known() then
 					regularCast("BersRage",Player)
 				end
 			end
 			
 			---------------
 			-- OVERPOWER --
-			if #Player.OverpowerUnit > 0 and Spell.Overpower:CD() == 0 then
+			if #Player.OverpowerUnit > 0 and Spell.Overpower:CD() == 0 and Spell.Overpower:Known() then
 				for _,Unit in ipairs(Player:GetEnemies(5)) do
 					for i = 1, #Player.OverpowerUnit do
 						if Unit.GUID == Player.OverpowerUnit[i].overpowerUnit then
@@ -410,7 +410,7 @@ function Warrior.Rotation()
 			
 			-------------
 			-- REVENGE --
-			if Spell.Revenge:IsReady() and Spell.Revenge:CD() == 0 then
+			if Spell.Revenge:IsReady() and Spell.Revenge:CD() == 0 and Spell.Revenge:Known() then
 				for _,Unit in ipairs(Player:GetEnemies(5)) do
 					if regularCast("Revenge", Unit, true) then
 						return true
@@ -421,7 +421,7 @@ function Warrior.Rotation()
 			-------------	
 			-- Execute --
 
-			if Setting ("Execute") and Target.HP < 20 then
+			if Setting ("Execute") and Target.HP < 20 and Spell.Execute:Known() then
 				if not select(2,GetShapeshiftFormInfo(1)) then
 					if smartCast("Execute", Target, true) then
 						return true
@@ -436,7 +436,7 @@ function Warrior.Rotation()
 			---------------------
 			-- MortalStrike --
 			
-			if Setting ("MortalStrike") and ((Spell.SweepStrikes:CD() >= .1 and Spell.Whirlwind:CD() >= .1) or #Player:GetEnemies(20) == 1) then
+			if Setting ("MortalStrike") and ((Spell.SweepStrikes:CD() >= .1 and Spell.Whirlwind:CD() >= .1) or #Player:GetEnemies(20) == 1) and Spell.MortalStrike:Known() then
 				if smartCast("MortalStrike",Target,true) then
 					return true
 				end
@@ -447,7 +447,7 @@ function Warrior.Rotation()
 			
 			if Setting("MortalStrike") then
 				if Target.Distance <= 8 and Setting("Whirlwind") and (#Target:GetEnemies(20) == 1 and Spell.MortalStrike:CD() >= .01) or (#Target:GetEnemies(20) >= 2 and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1)) then
-					if Spell.Whirlwind:CD() == 0 and Target.HP >= 20 then
+					if Spell.Whirlwind:CD() == 0 and Target.HP >= 20 and Spell.Whirlwind:Known() then
 						if smartCast("Whirlwind", Player) then
 							return true
 						end
@@ -455,7 +455,7 @@ function Warrior.Rotation()
 				end
 			else
 				if Target.Distance <= 8 and Setting("Whirlwind") and #Target:GetEnemies(20) == 1 or (#Target:GetEnemies(20) >= 2 and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1)) then
-					if Spell.Whirlwind:CD() == 0 and Target.HP >= 20 then
+					if Spell.Whirlwind:CD() == 0 and Target.HP >= 20 and Spell.Whirlwind:Known() then
 						if smartCast("Whirlwind", Player) then
 							return true
 						end
@@ -466,7 +466,7 @@ function Warrior.Rotation()
 			---------------
 			-- Hamstring --
 			
-			if Target.Player and Spell.Hamstring:IsReady() and not Debuff.Hamstring:Exist(Target) then
+			if Target.Player and Spell.Hamstring:IsReady() and not Debuff.Hamstring:Exist(Target) and Spell.Hamstring:Known() then
 				if smartCast("Hamstring",Target) then
 					return true
 				end
@@ -476,7 +476,7 @@ function Warrior.Rotation()
 			-- Disarm --
 			
 			if Setting("Use Disarm") then
-				if Target.Player and Spell.Disarm:CD() == 0 and Debuff.Hamstring:Exist(Target) then
+				if Target.Player and Spell.Disarm:CD() == 0 and Debuff.Hamstring:Exist(Target) and Spell.Disarm:Known() then
 					if smartCast("Disarm",Target, true) then
 						return true
 					end
@@ -486,7 +486,7 @@ function Warrior.Rotation()
 			----------
 			-- REND --
 
-			if Setting("Rend") and not RendImmune[Target.CreatureType] then
+			if Setting("Rend") and not RendImmune[Target.CreatureType] and Spell.Rend:Known() then
 				if Setting("Spread Rend") then
 					for _,Unit in ipairs(Player:GetEnemies(5)) do
 						if not Debuff.Rend:Exist(Unit) and Unit.TTD >= 4 then
@@ -506,7 +506,7 @@ function Warrior.Rotation()
 			------------
 			-- SUNDER --
 			
-			if Setting("SunderArmor") and Spell.SunderArmor:IsReady() and not SunderImmune[Target.CreatureType] then
+			if Setting("SunderArmor") and Spell.SunderArmor:IsReady() and not SunderImmune[Target.CreatureType] and Spell.SunderArmor:Known() then
 				if Setting("Spread Sunder") then
 					for _,Unit in ipairs(Player:GetEnemies(5)) do
 						if Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") and Unit.TTD >= 4 then
@@ -528,7 +528,7 @@ function Warrior.Rotation()
 			------------------------
 			-- Demoralizing Shout --
 			
-			if Setting("Demoralizing Shout") and not Debuff.DemoShout:Exist(Target) and #Player:GetEnemies(10) >= Setting("Min targets for Demoralizing Shout") then
+			if Setting("Demoralizing Shout") and Spell.DemoShout:Known() and not Debuff.DemoShout:Exist(Target) and #Player:GetEnemies(10) >= Setting("Min targets for Demoralizing Shout") then
 				if regularCast("DemoShout",Target,true) then
 					return true
 				end
@@ -537,7 +537,7 @@ function Warrior.Rotation()
 			------------------
 			-- Thunder Clap -- 
 			
-			if Setting("ThunderClap") and #Player:GetEnemies(5) >= Setting("Min targets for Thunderclap") and not Debuff.ThunderClap:Exist(Target) and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1) then
+			if Setting("ThunderClap") and Spell.ThunderClap:Known() and #Player:GetEnemies(5) >= Setting("Min targets for Thunderclap") and not Debuff.ThunderClap:Exist(Target) and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1) then
 				if smartCast("ThunderClap", Target, true) then
 					return true
 				end
@@ -547,13 +547,13 @@ function Warrior.Rotation()
 			-- DUMP --		
 			if Setting("Whirlwind") then
 				if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.4 then
-					if Spell.Whirlwind:CD() == 0 and select(2,GetShapeshiftFormInfo(3)) then
+					if Spell.Whirlwind:CD() == 0 and select(2,GetShapeshiftFormInfo(3)) and Spell.Whirlwind:Known() then
 						if regularCast("Whirlwind", Player) then
 							return true
 						end
 					else
 						if not IsCurrentSpell(845) and not IsCurrentSpell(285) then
-							if #Player:GetEnemies(5) >= 2 then
+							if #Player:GetEnemies(5) >= 2 and Spell.Cleave:Known() then
 								if regularCast("Cleave",Target,true) then
 									return true
 								end
@@ -569,7 +569,7 @@ function Warrior.Rotation()
 			if not Setting("Whirlwind") then
 				if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.4 then
 					if not IsCurrentSpell(845) or not IsCurrentSpell(285) then
-						if #Player:GetEnemies(5) >= 2 then
+						if #Player:GetEnemies(5) >= 2 and Spell.Cleave:Known() then
 							if regularCast("Cleave",Target,true) then
 								return true
 							end
