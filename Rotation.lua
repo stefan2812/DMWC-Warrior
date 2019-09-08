@@ -26,14 +26,14 @@ local function Locals()
 end
 
 local RendImmune = {
-	["Undead"] = true,
-	["Elemental"] = true,
-	["Totem"] = true,
-	["Mechanical"] = true
+	["6"] = true,
+	["4"] = true,
+	["11"] = true,
+	["9"] = true
 }
 local SunderImmune = {
-	["Totem"] = true,
-	["Mechanical"] = true
+	["11"] = true,
+	["9"] = true
 }
 local stanceCheckBattle = {
 	["Overpower"] = true,
