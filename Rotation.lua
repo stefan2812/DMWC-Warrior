@@ -317,7 +317,7 @@ function Warrior.Rotation()
 			-----------------
 			-- Retaliation -- 
 			
-			if (HP <=35 and Spell.Retaliation:CD() == 0) or (HP <=70 and Spell.Retaliation:CD() == 0 and #Player:GetEnemies(5) >= 2) then
+			if Setting("Retaliation") and ((HP <=35 and Spell.Retaliation:CD() == 0) or (HP <=70 and Spell.Retaliation:CD() == 0 and #Player:GetEnemies(5) >= 2)) then
 				if smartCast("Retaliation", Player) then
 					return true
 				end
