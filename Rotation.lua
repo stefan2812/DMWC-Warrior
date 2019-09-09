@@ -222,9 +222,7 @@ local function smartCast(spell, Unit, pool)
 		end
 	end
 end
-
-function Warrior.Rotation()
-	Locals()
+local function DebugSettings()
 	-------------------
 	-- Debug Setting --
 
@@ -236,12 +234,21 @@ function Warrior.Rotation()
 			prev = nil
 		end
 	end
-
+end
+local function Pace()
 	------------------------
 	-- control dance pace --
 
 	if DMW.Time <= timer + 0.3 then 
 		return true 
+	end
+end
+
+function Warrior.Rotation()
+	Locals()
+	DebugSettings()
+	if Pace() then
+		return true
 	end
 
 	-------------------------
@@ -302,8 +309,6 @@ function Warrior.Rotation()
 		if not IsCurrentSpell(6603) and Target.Distance <= 5 then
 			StartAttack(Target.Pointer)
 		end
-		
-		
 		
 	--------------------------------------------------------------------------------------	
 	------------------------------------- Preparation ------------------------------------
@@ -380,6 +385,7 @@ function Warrior.Rotation()
 					return true
 				end
 			end
+			
 	--------------------------------------------------------------------------------------		
 	------------------------------------- COMBAT -----------------------------------------
 	--------------------------------------------------------------------------------------
