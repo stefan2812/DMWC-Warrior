@@ -175,9 +175,9 @@ local function smartCast(spell, Unit, pool)
 	-------------------------------------------
 	-- Prevent Dancing for Rend from Berserk --
 
-	if Setting("Whirlwind") and spell == "Rend" and Spell.Whirlwind:CD() == 0 then
-		return true
-	end
+	--if Setting("Whirlwind") and spell == "Rend" and Spell.Whirlwind:CD() == 0 then
+	--	return true
+	--end
 
 	timer = DMW.Time
 	
@@ -389,10 +389,15 @@ end
 local function Interrupt()
 	---------------
 	-- Interrupt --
+	if Target and Setting("Interrupt with Pummel") and Target:Interrupt() and Spell.Pummel:Known() then
+		if smartCast("Pummel",Target) then
+			return true
+		end
+	end
 	if Setting("Interrupt with Pummel") and Spell.Pummel:Known() then
 		for _, Unit in ipairs(Player:GetEnemies(15)) do
 			if Unit:Interrupt() then
-				if smartCast("Pummel",Unit,true) then
+				if smartCast("Pummel",Unit) then
 					return true
 				end
 			end
@@ -568,6 +573,10 @@ function Warrior.Rotation()
 	if Pace() then
 		return true
 	end
+
+	if Interrupt() then
+		return true
+	end
 	
 	if ReturnToBattle() then
 		return true
@@ -588,10 +597,6 @@ function Warrior.Rotation()
 		if Player.Combat then	
 			
 			if Buffing() then
-				return true
-			end
-			
-			if Interrupt() then
 				return true
 			end
 			
