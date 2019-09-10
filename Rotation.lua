@@ -613,6 +613,13 @@ local function TestingMode()
 			if Player:GCDRemain() > 0 then
 				smartCast("ShieldBlock",Player)
 			end
+			for _, Unit in ipairs(Player:GetEnemies(15)) do
+				if not Buff.DemoShout:Exist(Unit) then
+					if smartCast("DemoShout",Player) then
+						return true
+					end
+				end
+			end
 			if regularCast("DemoShout",Player) then
 				return true
 			end
