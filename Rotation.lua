@@ -570,6 +570,11 @@ function Warrior.Rotation()
 	
 	DebugSettings()
 	
+	if select(8, ChannelInfo("Player")) == 9632 and #Player:GetEnemies(8) <= 1 then 
+		print ("Canceling Bladestorm")
+		RunMacroText("/stopcasting")
+	end
+	
 	if Pace() then
 		return true
 	end
