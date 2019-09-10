@@ -649,9 +649,14 @@ function Warrior.Rotation()
 			return true
 		end
 		
-		if Setting("TestingMode") and #Player:GetEnemies(15) >= Setting("Testing above") then
+		if Setting("TestingMode") then
 			if TestingMode() then
 				return true
+			end
+			if #Player:GetEnemies(15) >= Setting("Testing above") then
+				if smartCast("ThunderClap",Player,true) then
+					return true
+				end
 			end
 		end
 
