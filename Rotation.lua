@@ -650,13 +650,17 @@ function Warrior.Rotation()
 		end
 		
 		if Setting("TestingMode") then
+			if Spell.Taunt:CD() == 0 then
+				for _, Unit in ipairs(Player:GetEnemies(5)) do
+					if not Unit:HasThreat() then
+						if smartCast("Taunt",Unit) then
+							return true
+						end
+					end
+				end	
+			end
 			if TestingMode() then
 				return true
-			end
-			if #Player:GetEnemies(15) <= Setting("Testing above") then
-				if smartCast("ThunderClap",Player,true) then
-					return true
-				end
 			end
 		end
 
