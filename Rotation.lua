@@ -331,6 +331,24 @@ local function Defense()
 			return true
 		end
 	end
+
+	----------------
+	-- ShieldWall --	
+
+	if Setting("ShieldWall") and HP <= Setting("Use ShieldWall at # % HP") and Spell.ShieldWall:CD() == 0 and Spell.ShieldWall:Known() then
+		if smartCast("ShieldWall",Player) then
+			return true
+		end
+	end
+
+	----------------
+	-- LastStand --
+
+	if Setting("LastStand") and HP <= Setting("Use LastStand at # % HP") and Spell.LastStand:CD() == 0 and Spell.LastStand:Known() then
+		if regularCast("LastStand",Player) then
+			return true
+		end
+	end
 end
 local function ReturnToBattle()
 	if not select(2,GetShapeshiftFormInfo(1)) and Setting("Return to Battle Stance") and not Player.Combat and Spell.StanceBattle:Known() then
@@ -574,6 +592,18 @@ local function Combat()
 		end
 	end
 end
+local function TestingMode()
+ 	if Target and Player.Combat then
+		if #Player.GetEnemies() >= Setting("Testing above") then
+			if Player:GCDRemain() > 0 then
+				smartCast("ShieldBlock",Player)
+			end
+			if regularCast("DemoShout",Player) then
+				return true
+			end
+		end
+	end
+end
 
 function Warrior.Rotation()
 	Locals()
@@ -600,6 +630,16 @@ function Warrior.Rotation()
 
 	if Target and Target.ValidEnemy and Target.Health > 1 then
 		
+		if Defense() then
+			return true
+		end
+		
+		if Setting("TestingMode") then
+			if TestingMode() then
+				return true
+			end
+		end
+
 		if Opener() then
 			return true
 		end
@@ -615,10 +655,6 @@ function Warrior.Rotation()
 			end
 			
 			if Cooldowns() then
-				return true
-			end
-			
-			if Defense() then
 				return true
 			end
 
