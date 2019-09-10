@@ -331,6 +331,24 @@ local function Defense()
 			return true
 		end
 	end
+
+	----------------
+	-- ShieldWall --	
+
+	if Setting("ShieldWall") and HP <= Setting("Use ShieldWall at # % HP") and Spell.ShieldWall:CD() == 0 and Spell.ShieldWall:Known() then
+		if smartCast("ShieldWall",Player) then
+			return true
+		end
+	end
+
+	----------------
+	-- LastStand --
+
+	if Setting("LastStand") and HP <= Setting("Use LastStand at # % HP") and Spell.LastStand:CD() == 0 and Spell.LastStand:Known() then
+		if regularCast("LastStand",Player) then
+			return true
+		end
+	end
 end
 local function ReturnToBattle()
 	if not select(2,GetShapeshiftFormInfo(1)) and Setting("Return to Battle Stance") and not Player.Combat and Spell.StanceBattle:Known() then

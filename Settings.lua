@@ -48,4 +48,8 @@ function Warrior.Settings()
 	UI.AddHeader("Defensives")
 	UI.AddToggle("Use ShieldBlock", nil, true)
 	UI.AddRange("Shieldblock HP", nil, 30, 100, 10, 50)
+	UI.AddToggle("Use ShieldWall", nil, true)
+	UI.AddRange("Use ShieldWall at # % HP", nil, 1, 100, 5, 50)
+	UI.AddToggle("Use LastStand", nil, true)
+	UI.AddRange("Use LastStand at # % HP", nil, 1, 100, 5, 50)
 end
