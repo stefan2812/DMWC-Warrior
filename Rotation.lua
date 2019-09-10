@@ -417,15 +417,29 @@ end
 local function Interrupt()
 	---------------
 	-- Interrupt --
-	if Target and Setting("Interrupt with Pummel") and Target:Interrupt() and Spell.Pummel:Known() then
+	if Target and Setting("Interrupt with Pummel") and Target:Interrupt() and Spell.Pummel:Known() and Spell.Pummel:CD() == 0 then
 		if smartCast("Pummel",Target) then
 			return true
 		end
 	end
-	if Setting("Interrupt with Pummel") and Spell.Pummel:Known() then
+	if Setting("Interrupt with Pummel") and Spell.Pummel:Known()and Spell.Pummel:CD() == 0 then
 		for _, Unit in ipairs(Player:GetEnemies(15)) do
 			if Unit:Interrupt() then
 				if smartCast("Pummel",Unit) then
+					return true
+				end
+			end
+		end
+	end
+	if Target and Setting("Interrupt with ShieldBash") and Target:Interrupt() and Spell.ShieldBash:Known() and Spell.ShieldBash:CD() == 0 then
+		if smartCast("ShieldBash",Target) then
+			return true
+		end
+	end
+	if Setting("Interrupt with ShieldBash") and Spell.ShieldBash:Known() and Spell.ShieldBash:CD() == 0 then
+		for _, Unit in ipairs(Player:GetEnemies(15)) do
+			if Unit:Interrupt() then
+				if smartCast("ShieldBash",Unit) then
 					return true
 				end
 			end
