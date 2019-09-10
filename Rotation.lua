@@ -614,7 +614,7 @@ local function TestingMode()
 				smartCast("ShieldBlock",Player)
 			end
 			for _, Unit in ipairs(Player:GetEnemies(15)) do
-				if not Buff.DemoShout:Exist(Unit) then
+				if not Debuff.DemoShout:Exist(Unit) then
 					if smartCast("DemoShout",Player) then
 						return true
 					end
