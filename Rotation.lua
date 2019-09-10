@@ -359,7 +359,7 @@ local function Opener()
 		end
 	end
 
-	if Player.Combat and Setting("y") and select(2,GetShapeshiftFormInfo(3)) and Spell.Intercept:CD() == 0 and Target.Distance <= 25 and Target.Distance >= 8 then
+	if Player.Combat and Setting("Intercept") and select(2,GetShapeshiftFormInfo(3)) and Spell.Intercept:CD() == 0 and Target.Distance <= 25 and Target.Distance >= 8 then
 		if regularCast("Intercept", Target) then
 			return true 
 		end
