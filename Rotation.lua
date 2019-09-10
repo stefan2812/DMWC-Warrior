@@ -61,7 +61,6 @@ local stanceCheckDefence = {
 local stanceCheckBers = {
 	["Execute"] = true,
 	["BersRage"] = true,
-	["MortalStrike"] = true,
 	["SunderArmor"] = true,
 	["Hamstring"] = true,
 	["Intercept"] = true,
@@ -239,16 +238,21 @@ local function Pace()
 	------------------------
 	-- control dance pace --
 
-	if DMW.Time <= timer + 0.3 then 
+	if DMW.Time <= timer + 0.2 then 
 		return true 
 	end
 end
 local function Dumping()	
 	if Setting("Whirlwind") and Spell.Whirlwind:Known() then
 		if Player.Power >= Setting("Rage Dump") and Player.SwingLeft <= 0.4 then
-			if Spell.Whirlwind:CD() == 0 and select(2,GetShapeshiftFormInfo(3)) then
+			if Spell.Whirlwind:CD() == 0 and select(2,GetShapeshiftFormInfo(3)) and Target.Distance <= 8 then
 				if regularCast("Whirlwind", Player) then
 					return true
+				end
+				if Setting("MortalStrike") and Target.Distance <= 8 and Spell.MortalStrike:Known() and Spell.MortalStrike:CD() == 0 then
+					if regularCast("MortalStrike", Target, true) then
+						return true
+					end
 				end
 			else
 				if not IsCurrentSpell(845) and not IsCurrentSpell(285) then
@@ -458,7 +462,7 @@ local function Combat()
 	-- MortalStrike --
 		
 	if Setting ("MortalStrike") and ((Spell.SweepStrikes:CD() >= .1 and Spell.Whirlwind:CD() >= .1) or #Player:GetEnemies(20) == 1) and Spell.MortalStrike:Known() then
-		if smartCast("MortalStrike",Target,true) then
+		if regularCast("MortalStrike",Target, true) then
 			return true
 		end
 	end
@@ -571,7 +575,7 @@ function Warrior.Rotation()
 	DebugSettings()
 	
 	if select(8, ChannelInfo("Player")) == 9632 and #Player:GetEnemies(8) <= 1 then 
-		print ("Canceling Bladestorm")
+		--print ("Canceling Bladestorm")
 		RunMacroText("/stopcasting")
 	end
 	
