@@ -358,6 +358,12 @@ local function Opener()
 			return true 
 		end
 	end
+
+	if Player.Combat and Setting("y") and select(2,GetShapeshiftFormInfo(3)) and Spell.Intercept:CD() == 0 and Target.Distance <= 25 and Target.Distance >= 8 then
+		if regularCast("Intercept", Target) then
+			return true 
+		end
+	end
 		
 	---------------
 	-- Hamstring --
@@ -574,8 +580,7 @@ function Warrior.Rotation()
 	
 	DebugSettings()
 	
-	if select(8, ChannelInfo("Player")) == 9632 and #Player:GetEnemies(8) <= 1 then 
-		--print ("Canceling Bladestorm")
+	if Setting("Skip Ravenger") and select(8, ChannelInfo("Player")) == 9632 and #Player:GetEnemies(8) <= 1 then
 		RunMacroText("/stopcasting")
 	end
 	
