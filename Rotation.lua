@@ -601,7 +601,7 @@ local function Combat()
 	------------------
 	-- Thunder Clap -- 
 			
-	if Setting("ThunderClap") and Spell.ThunderClap:Known() and #Player:GetEnemies(5) >= Setting("Min targets for Thunderclap") and not Debuff.ThunderClap:Exist(Target) and (Buff.SweepStrikes:Exist(Player) or Spell.SweepStrikes:CD() >= .1) then
+	if Setting("ThunderClap") and Spell.ThunderClap:Known() and #Player:GetEnemies(5) >= Setting("Min targets for Thunderclap") and not Debuff.ThunderClap:Exist(Target) then
 		if smartCast("ThunderClap", Target, true) then
 			return true
 		end
@@ -614,7 +614,7 @@ local function TestingMode()
 				smartCast("ShieldBlock",Player)
 			end
 			for _, Unit in ipairs(Player:GetEnemies(15)) do
-				if not Debuff.DemoShout:Exist(Unit) then
+				if not Debuff.DemoShout:Exist(Unit) then 
 					if smartCast("DemoShout",Player) then
 						return true
 					end
