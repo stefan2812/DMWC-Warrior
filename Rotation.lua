@@ -609,7 +609,7 @@ local function Combat()
 end
 local function TestingMode()
  	if Target and Player.Combat then
-		if #Player:GetEnemies() >= Setting("Testing above") then
+		if #Player:GetEnemies(15) >= Setting("Testing above") then
 			if Player:GCDRemain() > 0 then
 				smartCast("ShieldBlock",Player)
 			end
