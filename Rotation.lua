@@ -649,7 +649,7 @@ function Warrior.Rotation()
 			return true
 		end
 		
-		if Setting("TestingMode") then
+		if Setting("TestingMode") and #Player:GetEnemies(15) >= Setting("Testing above") then
 			if TestingMode() then
 				return true
 			end
