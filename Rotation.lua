@@ -608,7 +608,7 @@ local function Combat()
 end
 
 local function TestRoutine()
-	if not Player.Combat and Target then
+	if not Player.Combat and Target and Target.ValidEnemy then
 		if Setting("Charge") and Target.Distance >= 8 and Target.Distance <= 25 then
 			if smartCast("Charge", Target) then 
 				return true
