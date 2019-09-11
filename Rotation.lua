@@ -620,6 +620,11 @@ local function TestingMode()
 					end
 				end
 			end
+			if #Player:GetFriends(20) >= 4 and not Buff.BattleShout:Exist(Player) then
+				if regularCast("BattleShout",Player, true) then
+					return true
+				end
+			end
 			if regularCast("DemoShout",Player) then
 				return true
 			end
