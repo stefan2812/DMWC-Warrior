@@ -305,6 +305,24 @@ local function Cooldowns()
 	end
 end
 local function Defense()
+	----------------
+	-- ShieldWall --	
+
+	if Setting("ShieldWall") and HP <= Setting("Use ShieldWall at # % HP") and Spell.ShieldWall:CD() == 0 and Spell.ShieldWall:Known() then
+		if smartCast("ShieldWall",Player) then
+			return true
+		end
+	end
+
+	----------------
+	-- LastStand --
+
+	if Setting("LastStand") and HP <= Setting("Use LastStand at # % HP") and Spell.LastStand:CD() == 0 and Spell.LastStand:Known() then
+		if regularCast("LastStand",Player) then
+			return true
+		end
+	end
+	
 	--------------------
 	-- Defence Stance --
 	
@@ -328,24 +346,6 @@ local function Defense()
 	
 	if Setting("Retaliation") and Spell.Retaliation:Known() and ((HP <=35 and Spell.Retaliation:CD() == 0) or (HP <=70 and Spell.Retaliation:CD() == 0 and #Player:GetEnemies(5) >= 2)) then
 		if smartCast("Retaliation", Player) then
-			return true
-		end
-	end
-
-	----------------
-	-- ShieldWall --	
-
-	if Setting("ShieldWall") and HP <= Setting("Use ShieldWall at # % HP") and Spell.ShieldWall:CD() == 0 and Spell.ShieldWall:Known() then
-		if smartCast("ShieldWall",Player) then
-			return true
-		end
-	end
-
-	----------------
-	-- LastStand --
-
-	if Setting("LastStand") and HP <= Setting("Use LastStand at # % HP") and Spell.LastStand:CD() == 0 and Spell.LastStand:Known() then
-		if regularCast("LastStand",Player) then
 			return true
 		end
 	end
