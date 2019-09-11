@@ -674,6 +674,12 @@ local function TestRoutine()
 				return true
 			end
 		end
+		-- Hamstring --
+		if Setting("Hamstring on low mob") and Player.Combat and Spell.Hamstring:Known() and Target.HP <= 30 and Target.Distance <= 5 and not Debuff.Hamstring:Exist(Target) and not (#Player.OverpowerUnit > 0 and Spell.Overpower:CD() == 0) then
+			if smartCast("Hamstring", Target, true) then
+				return true
+			end
+		end
 		-- Mortalstrike --
 		if Setting("MortalStrike") and Spell.MortalStrike:Known() and Spell.MortalStrike:CD() == 0 then
 			if regularCast("MortalStrike",Target, true) then
@@ -744,6 +750,9 @@ function Warrior.Rotation()
 
 	if Setting("Experimental Rotation") then
 		if Buffing() then
+			return true
+		end
+		if Defense() then
 			return true
 		end
 		if TestRoutine() then
