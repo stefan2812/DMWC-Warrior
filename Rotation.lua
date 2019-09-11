@@ -690,7 +690,7 @@ local function TestRoutine()
 		if Setting("SunderArmor") and Spell.SunderArmor:IsReady() and not SunderImmune[Target.CreatureType] then
 			if Setting("Spread Sunder") then
 				for _,Unit in ipairs(Player:GetEnemies(5)) do
-					if Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") and Unit.TTD >= 4 then
+					if Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") and Unit.TTD >= 2 then
 						if regularCast("SunderArmor",Unit,true) then
 							return true
 						end
@@ -698,7 +698,7 @@ local function TestRoutine()
 				end
 			end
 			if not Setting("Spread Sunder") then
-				if Debuff.SunderArmor:Stacks(Target) < Setting("Apply # Stacks of Sunder Armor") and Target.TTD >= 4 then
+				if Debuff.SunderArmor:Stacks(Target) < Setting("Apply # Stacks of Sunder Armor") and Target.TTD >= 2 then
 					if regularCast("SunderArmor",Target,true) then
 						return true
 					end
@@ -711,7 +711,7 @@ local function TestRoutine()
 				return true
 			end
 		end
-		if Spell.Whirlwind:CD() > 0 and Spell.MortalStrike:CD() > 0 and Player.Power >= Setting("Rage Dump") then
+		if Spell.Whirlwind:CD() > .1 and Spell.MortalStrike:CD() > .1 and Player.Power >= Setting("Rage Dump") then
 			if #Player:GetEnemies(5) >= 2 then
 				if regularCast("Cleave",Target) then
 					return true
