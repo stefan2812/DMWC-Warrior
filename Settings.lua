@@ -53,4 +53,8 @@ function Warrior.Settings()
 	UI.AddRange("Use ShieldWall at # % HP", nil, 1, 100, 5, 50)
 	UI.AddToggle("Use LastStand", nil, true)
 	UI.AddRange("Use LastStand at # % HP", nil, 1, 100, 5, 50)
+
+	UI.AddHeader("DO NOT USE - EXPERIMENTAL")
+	UI.AddToggle("Experimental Rotation",nil, false)
+
 end

@@ -405,12 +405,12 @@ local function Opener()
 	end
 end
 local function Buffing()
-	-----------------
 	-- Battleshout --
-	
-	if Setting("BattleShout") and not Buff.BattleShout:Exist(Player) and Spell.BattleShout:Known() then
-		if regularCast("BattleShout", Player, true) then
-			return true
+	if Player.Combat then
+		if Setting("BattleShout") and not Buff.BattleShout:Exist(Player) and Spell.BattleShout:Known() then
+			if regularCast("BattleShout", Player, true) then
+				return true
+			end
 		end
 	end
 end
@@ -607,6 +607,118 @@ local function Combat()
 	end
 end
 
+local function TestRoutine()
+	if not Player.Combat and Target then
+		if Setting("Charge") and Target.Distance >= 8 and Target.Distance <= 25 then
+			if smartCast("Charge", Target) then 
+				return true
+			end
+		end
+	end
+	if Player.Combat and Target and Target.ValidEnemy and Target.Health > 1 then
+		-- Sweeping Strikes --
+		if Setting("SweepingStrikes") then
+			if Spell.SweepStrikes:Known() and Spell.SweepStrikes:CD()== 0 and #Player:GetEnemies(5) >= 2 then
+				if smartCast("SweepStrikes",Player,true) then
+					return true
+				end
+			end
+		end
+		if not IsCurrentSpell(6603) and Target.Distance <= 5 then
+			StartAttack(Target.Pointer)
+		end
+		-- OVERPOWER --
+		if #Player.OverpowerUnit > 0 and Spell.Overpower:CD() == 0 and Spell.Overpower:Known() then
+			for _,Unit in ipairs(Player:GetEnemies(5)) do
+				for i = 1, #Player.OverpowerUnit do
+					if Unit.GUID == Player.OverpowerUnit[i].overpowerUnit then
+						if smartCast("Overpower", Unit, true) then
+							return true
+						end
+					end
+				end 
+			end
+			return true
+		end
+		-- REVENGE --
+		if Spell.Revenge:IsReady() and Spell.Revenge:CD() == 0 and Spell.Revenge:Known() then
+			for _,Unit in ipairs(Player:GetEnemies(5)) do
+				if regularCast("Revenge", Unit, true) then
+					return true
+				end
+			end
+		end
+		-- Execute --
+		if Setting ("Execute") and Target.HP < 20 and Spell.Execute:Known() then
+			if not select(2,GetShapeshiftFormInfo(1)) then
+				if smartCast("Execute", Target, true) then
+					return true
+				end
+			else
+				if regularCast("Execute", Target, true) then
+					return true
+				end
+			end
+		end
+		-- Bloodrage --
+		if Setting("Bloodrage") and Spell.Bloodrage:IsReady() then
+			regularCast("Bloodrage", Player)
+		end
+		-- Bers Rage --
+		if Setting("BersRage") and Spell.BersRage:CD() == 0 and Target.TTD >= 4 and Spell.BersRage:Known() then
+			smartCast("BersRage", Player)
+		end
+		-- Intercept --
+		if Setting("Intercept") and Spell.Intercept:CD() == 0 and Target.Distance >= 8 and Target.Distance <= 25 and Player.Power >= 10 and Player.Power <= 25 then
+			if smarCast("Intercept",Target,true) then
+				return true
+			end
+		end
+		-- Mortalstrike --
+		if Setting("MortalStrike") and Spell.MortalStrike:Known() and Spell.MortalStrike:CD() == 0 then
+			if regularCast("MortalStrike",Target, true) then
+				return true
+			end
+		end
+		-- SunderArmor --
+		if Setting("SunderArmor") and Spell.SunderArmor:IsReady() and not SunderImmune[Target.CreatureType] then
+			if Setting("Spread Sunder") then
+				for _,Unit in ipairs(Player:GetEnemies(5)) do
+					if Debuff.SunderArmor:Stacks(Unit) < Setting("Apply # Stacks of Sunder Armor") and Unit.TTD >= 4 then
+						if regularCast("SunderArmor",Unit,true) then
+							return true
+						end
+					end
+				end
+			end
+			if not Setting("Spread Sunder") then
+				if Debuff.SunderArmor:Stacks(Target) < Setting("Apply # Stacks of Sunder Armor") and Target.TTD >= 4 then
+					if regularCast("SunderArmor",Target,true) then
+						return true
+					end
+				end
+			end	
+		end
+		-- Whirlwind -- 
+		if Setting("Whirlwind") and Player.Power >= 25 and Spell.Whirlwind:Known() and Spell.Whirlwind:CD() == 0 then
+			if smartCast("Whirlwind",Player,true) then
+				return true
+			end
+		end
+		if Spell.Whirlwind:CD() > 0 and Spell.MortalStrike:CD() > 0 and Player.Power >= Setting("Rage Dump") then
+			if #Player:GetEnemies(5) >= 2 then
+				if regularCast("Cleave",Target) then
+					return true
+				end
+			else
+				if regularCast("HeroicStrike",Target) then
+					return true
+				end
+			end
+		end
+	end
+end
+
 function Warrior.Rotation()
 	Locals()
 	
@@ -630,37 +742,46 @@ function Warrior.Rotation()
 
 	AutoTarget()
 
-	if Target and Target.ValidEnemy and Target.Health > 1 then
-		
-		if Opener() then
+	if Setting("Experimental Rotation") then
+		if Buffing() then
 			return true
 		end
-		
-		if StartAA() then
+		if TestRoutine() then
 			return true
 		end
-
-		if Player.Combat then	
+	else
+		if Target and Target.ValidEnemy and Target.Health > 1 then
 			
-			if Buffing() then
-				return true
-			end
-			
-			if Cooldowns() then
+			if Opener() then
 				return true
 			end
 			
-			if Defense() then
+			if StartAA() then
 				return true
 			end
 
-			if Combat() then
-				return true
-			end
+			if Player.Combat then	
+				
+				if Buffing() then
+					return true
+				end
+				
+				if Cooldowns() then
+					return true
+				end
+				
+				if Defense() then
+					return true
+				end
 
-			if Dumping() then
-				return true
-			end
-		end -- if Combat end
-	end -- if valid target end
+				if Combat() then
+					return true
+				end
+
+				if Dumping() then
+					return true
+				end
+			end -- if Combat end
+		end -- if valid target end
+	end -- end Non Experimental
 end -- Rotation end
