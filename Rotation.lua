@@ -670,7 +670,7 @@ local function TestRoutine()
 		end
 		-- Intercept --
 		if Setting("Intercept") and Spell.Intercept:CD() == 0 and Target.Distance >= 8 and Target.Distance <= 25 and Player.Power >= 10 and Player.Power <= 25 then
-			if smarCast("Intercept",Target,true) then
+			if smartCast("Intercept",Target,true) then
 				return true
 			end
 		end
