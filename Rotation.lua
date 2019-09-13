@@ -293,8 +293,8 @@ local function Buffing()
 			end
 		end
 		if Setting("Demo Shout") and not Debuff.DemoShout:Exist(Target) then
-			if #Player.GetEnemies(5) >= Setting("Demo Shout at/above") then
-				if regularCast("DemoShout",Player,true) then
+			if #Player:GetEnemies(5) >= Setting ("Demo Shout at/above") then
+				if regularCast("DemoShout",Target) then
 					return true
 				end
 			end
