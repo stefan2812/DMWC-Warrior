@@ -292,6 +292,13 @@ local function Buffing()
 				return true
 			end
 		end
+		if Setting("Demo Shout") and not Debuff.DemoShout:Exist(Target) then
+			if #Player.GetEnemies(5) >= Setting("Demo Shout at/above") then
+				if regularCast("DemoShout",Player,true) then
+					return true
+				end
+			end
+		end
 	end
 end
 local function Interrupt()
@@ -341,6 +348,10 @@ local function Combat()
 		-- Sweeping Strikes --
 		if Setting("SweepingStrikes") then
 			if Spell.SweepStrikes:Known() and Spell.SweepStrikes:CD()== 0 and #Player:GetEnemies(5) >= 2 then
+				if Setting("Debug") then
+					PlaySound(416)
+					print("Casting SweepStrikes because :"..tostring(#Player:GetEnemies(5)).." Enemies within 5yds")
+				end
 				if smartCast("SweepStrikes",Player,true) then
 					return true
 				end
