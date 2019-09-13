@@ -70,9 +70,17 @@ local stanceCheckBers = {
 }
 
 local function regularCast(spell, Unit, pool)
-    if pool and Spell[spell]:Cost() > Player.Power then
-        return true
-    end
+	if pool then 
+		if spell == "Execute" then
+			if (Spell[spell]:Cost() + 5) > Player.Power then
+				return true
+			end
+		else
+			if Spell[spell]:Cost() > Player.Power then
+				return true
+			end
+		end
+	end
 	if Spell[spell]:Cast(Unit) then
         return true
     end
@@ -141,7 +149,7 @@ local function stanceDanceCast(spell, Unit, stance)
 
 		if Setting("Debug") then
 			if spell ~= prevs then
-				print("Spell = "..tostring(spell).." , Unit = ".. tostring(Unit) .. " , Stance = "..tostring(stance))
+				print("Spell = "..tostring(spell).." , RagePre = "..tostring(Player.Power).." , RagePost = "..tostring(Player.Power - Spell[spell]:Cost()).." , Stance = "..tostring(stance))
 				prevs = spell
 			end
 		end
