@@ -22,6 +22,7 @@ function Warrior.Settings()
 	UI.AddToggle("ThunderClap", "Use Thunderclap", false)
 	UI.AddDropdown("Demo Shout at/above", "Demoshout when more then # Targets ", {"1","2","3","4","5"}, "2")
 	UI.AddDropdown("ThunderClap at/above", "ThunderClap when more then # Targets ", {"1","2","3","4","5"}, "3")
+	UI.AddToggle("Execute", "Use Execute", false)
 
 	UI.AddHeader("Cooldowns")
 	UI.AddToggle("Bloodrage", "Use Bloodrage when available", false)

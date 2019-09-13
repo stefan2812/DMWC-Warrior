@@ -382,15 +382,21 @@ local function Combat()
 			end
 		end
 		-- Execute --
-		if Target.HP < 20 and Spell.Execute:Known() then
-			if select(2,GetShapeshiftFormInfo(2)) then
-				if smartCast("Execute", Target, true) then
-					return true
+		if Target.HP < 20 then
+			if Setting("Execute") and Spell.Execute:Known()	then
+				if select(2,GetShapeshiftFormInfo(2)) then
+					if smartCast("Execute", Target, true) then
+						return true
+					end
+				else
+					if regularCast("Execute", Target, true) then
+						return true
+					end
 				end
-			else
-				if regularCast("Execute", Target, true) then
-					return true
-				end
+			end
+		elseif not Setting("Execute") then
+			if regularCast("HeroicStrike",Target,true)  then
+				return true
 			end
 		end
 		-- Bloodrage --
