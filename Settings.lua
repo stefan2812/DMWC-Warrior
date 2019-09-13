@@ -35,9 +35,8 @@ function Warrior.Settings()
 		
 	UI.AddHeader("Debuffs")
     UI.AddToggle("Rend", "Applies Rend debuff to Targets", false)
-	--UI.AddToggle("Spread Rend", "Spread Rend to all targets within 5yd", false)
 	UI.AddToggle("SunderArmor", "Applies SunderArmor debuff to Targets", false)
-	UI.AddBlank(false)
+	UI.AddToggle("Spread Rend", "Spread Rend to all targets within 5yd", false)
 	UI.AddDropdown("Apply # Stacks of Sunder Armor", "Apply # Stacks of Sunder Armor", {"1","2","3","4","5"}, "3")
 	
 	UI.AddHeader("Stance")
@@ -58,5 +57,6 @@ function Warrior.Settings()
 	UI.AddHeader("Not for general use")
 	UI.AddToggle("Skip Ravenger",nil,false)
 	UI.AddToggle("Debug","Adds Debug prints to Chat", false)
+	UI.AddToggle("DumpUpSunder",nil,false)
 
 end

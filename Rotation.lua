@@ -292,7 +292,7 @@ local function Buffing()
 				return true
 			end
 		end
-		if Setting("Demo Shout") and not Debuff.DemoShout:Exist(Target) and Target.TTD >= 4 then
+		if Setting("Demo Shout") and not Debuff.DemoShout:Exist(Target) then
 			if #Player:GetEnemies(5) >= Setting ("Demo Shout at/above") then
 				if regularCast("DemoShout",Target) then
 					return true
@@ -348,10 +348,10 @@ local function Combat()
 		-- Sweeping Strikes --
 		if Setting("SweepingStrikes") then
 			if Spell.SweepStrikes:Known() and Spell.SweepStrikes:CD()== 0 and #Player:GetEnemies(5) >= 2 then
-				if Setting("Debug") then
-					PlaySound(416)
-					print("Casting SweepStrikes because :"..tostring(#Player:GetEnemies(5)).." Enemies within 5yds")
-				end
+				--if Setting("Debug") then
+				--	PlaySound(416)
+				--	print("Casting SweepStrikes because :"..tostring(#Player:GetEnemies(5)).." Enemies within 5yds")
+				--end
 				if smartCast("SweepStrikes",Player,true) then
 					return true
 				end
@@ -393,10 +393,10 @@ local function Combat()
 						return true
 					end
 				end
-			end
-		elseif not Setting("Execute") then
-			if regularCast("HeroicStrike",Target,true)  then
-				return true
+			elseif not Setting("Execute") then
+				if regularCast("HeroicStrike",Target,true)  then
+					return true
+				end
 			end
 		end
 		-- Bloodrage --
@@ -435,9 +435,20 @@ local function Combat()
 		end
 		-- Rend --
 		if Setting("Rend") and Spell.Rend:Known() and not RendImmune[Target.CreatureType] then
-			if Target.TTD >= 2 then
+			if Target.TTD >= 2 and not Debuff.Rend:Exist(Target) then
 				if smartCast("Rend",Target,true) then
 					return true
+				end
+			end
+			if Setting("Spread Rend") and #Player:GetEnemies(5) >= 2 then
+				for _,Unit in ipairs(Player:GetEnemies(5)) do
+					if not RendImmune[Unit.CreatureType] then
+						if Unit.TTD >= 2 and not Debuff.Rend:Exist(Unit) then
+							if smartCast("Rend",Unit,true) then
+								return true
+							end
+						end
+					end
 				end
 			end
 		end
@@ -447,14 +458,21 @@ local function Combat()
 				return true
 			end
 		end
-		if Spell.Whirlwind:CD() > .1 and Spell.MortalStrike:CD() > .1 and Player.Power >= Setting("Dump RAGE above") then
+		if (Spell.Whirlwind:CD() > .1 or not Spell.Whirlwind:Known() or not Setting("Whirlwind")) and (Spell.MortalStrike:CD() > .1 or not Spell.MortalStrike:Known() or not Setting("MortalStrike")) and Player.Power >= Setting("Dump RAGE above") then
 			if #Player:GetEnemies(5) >= 2 then
 				if regularCast("Cleave",Target) then
 					return true
 				end
 			else
-				if regularCast("HeroicStrike",Target) then
-					return true
+				if Setting ("DumpUpSunder") and not SunderImmune[Target.CreatureType] and Debuff.SunderArmor:Stacks(Target) < 5 then
+					if regularCast("SunderArmor",Target) then
+						print("DumpUpSunder")
+						return true
+					end
+				else
+					if regularCast("HeroicStrike",Target) then
+						return true
+					end
 				end
 			end
 		end
