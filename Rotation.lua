@@ -105,8 +105,15 @@ local function DumpBeforeDance(value, spell)
 					return true
 				end
 			else
-				if regularCast("HeroicStrike") then
-					return true
+				if Setting ("DumpUpSunder") and not SunderImmune[Target.CreatureType] and Debuff.SunderArmor:Stacks(Target) < 5 then
+					if regularCast("SunderArmor",Target) then
+						print("DumpUpSunder")
+						return true
+					end
+				else
+					if regularCast("HeroicStrike",Target) then
+						return true
+					end
 				end
 			end
     elseif value >= 10 then
