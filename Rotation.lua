@@ -292,7 +292,7 @@ local function Buffing()
 				return true
 			end
 		end
-		if Setting("Demo Shout") and not Debuff.DemoShout:Exist(Target) then
+		if Setting("Demo Shout") and not Debuff.DemoShout:Exist(Target) and Target.TTD >= 4 then
 			if #Player:GetEnemies(5) >= Setting ("Demo Shout at/above") then
 				if regularCast("DemoShout",Target) then
 					return true
