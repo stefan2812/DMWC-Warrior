@@ -23,6 +23,25 @@ local function Locals()
 	if timer == nil then 
 		timer = DMW.Time 
 	end
+	PotionName = Setting("HP Potion to use")
+	if PotionName == 1 then
+		PotionID = 118
+	end
+	if PotionName == 2 then
+		PotionID = 858
+	end
+	if PotionName == 3 then
+		PotionID = 929
+	end
+	if PotionName == 4 then
+		PotionID = 1710
+	end
+	if PotionName == 5 then
+		PotionID = 3928
+	end
+	if PotionName == 6 then
+		PotionID = 13446
+	end
 end
 
 local RendImmune = {
@@ -350,8 +369,21 @@ local function Interrupt()
 		end
 	end
 end
-
+local function UsePotion()
+	if Setting("Use HP Potion") then
+		if GetItemCount(PotionID) >= 1 and GetItemCooldown(PotionID) == 0 then
+			if HP <= 50 and Player.Combat then
+				name = GetItemInfo(PotionID)
+				RunMacroText("/use " .. name)
+				return true
+			end
+		end
+	end
+end
 local function Combat()
+	if Setting("AutoTarget") and Player.Combat and not Target then
+		AutoTarget()
+	end
 	if not Player.Combat and Target and Target.ValidEnemy then
 		if Setting("Use Charge") and Target.Distance >= 8 and Target.Distance <= 25 then
 			if smartCast("Charge", Target) then 
@@ -499,8 +531,8 @@ function Warrior.Rotation()
 	
 	DebugSettings()
 	
-	if Setting("Skip Ravenger") and select(8, ChannelInfo("Player")) == 9632 and #Player:GetEnemies(8) <= 1 then
-		RunMacroText("/stopcasting")
+	if UsePotion() then
+		return true
 	end
 	
 	if Pace() then

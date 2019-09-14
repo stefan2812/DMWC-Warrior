@@ -53,9 +53,11 @@ function Warrior.Settings()
 	UI.AddToggle("Retaliation",nil,false)
 	UI.AddRange("LastStand HP", nil, 1, 100, 5, 50)
 	
+	UI.AddHeader("Consumables")
+	UI.AddToggle("Use HP Potion",nil,false,true)
+	UI.AddDropdown("HP Potion to use", "Use HP Potion", {"Minor Healing Potion","Lesser Healing Potion","Healing Potion","Greater Healing Potion","Superior Healing Potion", "Major Healing Potion"}, "1",true)
 
 	UI.AddHeader("Not for general use")
-	UI.AddToggle("Skip Ravenger",nil,false)
 	UI.AddToggle("Debug","Adds Debug prints to Chat", false)
 	UI.AddToggle("DumpUpSunder",nil,false)
 
