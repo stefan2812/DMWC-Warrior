@@ -56,6 +56,7 @@ function Warrior.Settings()
 	UI.AddHeader("Consumables")
 	UI.AddToggle("Use HP Potion",nil,false,true)
 	UI.AddDropdown("HP Potion to use", "Use HP Potion", {"Minor Healing Potion","Lesser Healing Potion","Healing Potion","Greater Healing Potion","Superior Healing Potion", "Major Healing Potion"}, "1",true)
+	UI.AddRange("Use Potion at #% HP", nil, 10, 100, 5, 50, true)
 
 	UI.AddHeader("Not for general use")
 	UI.AddToggle("Debug","Adds Debug prints to Chat", false)

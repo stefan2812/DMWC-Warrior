@@ -372,7 +372,7 @@ end
 local function UsePotion()
 	if Setting("Use HP Potion") then
 		if GetItemCount(PotionID) >= 1 and GetItemCooldown(PotionID) == 0 then
-			if HP <= 50 and Player.Combat then
+			if HP <= Setting("Use Potion at #% HP") and Player.Combat then
 				name = GetItemInfo(PotionID)
 				RunMacroText("/use " .. name)
 				return true
