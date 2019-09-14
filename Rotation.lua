@@ -67,7 +67,7 @@ local stanceCheckBattle = {
 	["Execute"] = true,
 	["ShieldBash"] = true
 }
-local stanceCheckDefence = {
+local stanceCheckDefense = {
 	["Rend"] = true,
 	["SunderArmor"] = true,
 	["Disarm"] = true,
@@ -87,7 +87,9 @@ local stanceCheckBers = {
 	["Recklessness"] = true,
     ["Whirlwind"] = true
 }
-
+local wasteExceptions = {
+	["Execute"] = true
+}
 local function regularCast(spell, Unit, pool)
 	if pool then 
 		if spell == "Execute" then
@@ -120,15 +122,17 @@ local function DumpBeforeDance(value, spell)
 	-- Dump base on Settings --
 
     if value >= 30 then
-		if Setting("MortalStrike") and Spell.MortalStrike:Cast(Target) then 
-			return true 
+		if Setting("MortalStrike") and Spell.Mortalstrike:CD() == 0 then 
+			if regularCast("MortalStrike", Target) then
+				return true
+			end
 		end
     elseif value >= 20 then
             if #Player:GetEnemies(5) >= 2 then
-				if Spell.ThunderClap:Cast(Target) then 
-					return true 
+				if regularCast("ThunderClap", Player) then
+					return true
 				end
-				if regularCast("Cleave") then
+				if regularCast("Cleave", Target) then
 					return true
 				end
 			else
@@ -186,9 +190,7 @@ local function stanceDanceCast(spell, Unit, stance)
     end
 end
 local function smartCast(spell, Unit, pool)
-	-------------------------------
 	-- Check Pooling requirement --
-
 	if pool and Spell[spell]:Cost() > Player.Power then
 		if spell == "SweepStrikes" and not select(2,GetShapeshiftFormInfo(1)) then
             Spell.StanceBattle:Cast()
@@ -196,30 +198,19 @@ local function smartCast(spell, Unit, pool)
 		return true
 	end
 
-	------------------------------
 	-- Check Anti Waste Setting --
-
-	if Setting("Dont waste RAGE") and Player.Power >= 31 then
+	if Setting("Dont waste RAGE") and Player.Power >= 31 and not wasteExceptions[spell] then
 		if DumpBeforeDance(Player.Power - 25, spell) then
 			return true
 		end
 	end
 
-	-------------------------------------------
-	-- Prevent Dancing for Rend from Berserk --
-
-	--if Setting("Whirlwind") and spell == "Rend" and Spell.Whirlwind:CD() == 0 then
-	--	return true
-	--end
-
 	timer = DMW.Time
 	
-	---------------------------------------
 	-- Check required Stance to Dance to --
-
 	if select(2,GetShapeshiftFormInfo(1)) then
 		if not stanceCheckBattle[spell] then
-			if stanceCheckDefence[spell] then
+			if stanceCheckDefense[spell] then
 				stanceDanceCast(spell, Unit, 2)
 			elseif stanceCheckBers[spell] then
 				stanceDanceCast(spell, Unit, 3)
@@ -233,7 +224,7 @@ local function smartCast(spell, Unit, pool)
 		if not stanceCheckBers[spell] then
 			if stanceCheckBattle[spell] then
 				stanceDanceCast(spell, Unit, 1)
-			elseif stanceCheckDefence[spell] then
+			elseif stanceCheckDefense[spell] then
 				stanceDanceCast(spell, Unit, 2)
 			else
 				if Spell[spell]:Cast(Unit) then return true end
@@ -242,7 +233,7 @@ local function smartCast(spell, Unit, pool)
 			if Spell[spell]:Cast(Unit) then return true end
 		end
 	elseif select(2,GetShapeshiftFormInfo(2)) then
-		if not stanceCheckDefence[spell] then
+		if not stanceCheckDefense[spell] then
 			if stanceCheckBattle[spell] then
 				stanceDanceCast(spell, Unit, 1)
 			elseif stanceCheckBers[spell] then
